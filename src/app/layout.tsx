@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
-import Navbar from '@/components/Navbar';
+import AppLayout from '@/components/AppLayout';
 
 export const metadata: Metadata = {
   title: 'Jamia Laundry Management System',
@@ -17,8 +17,7 @@ export default function RootLayout({
     <html lang="ur" dir="rtl">
       <body className="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
         <AppProvider>
-          <Navbar />
-          <main className="min-h-[calc(100vh-120px)]">{children}</main>
+          <AppLayout>{children}</AppLayout>
         </AppProvider>
       </body>
     </html>
