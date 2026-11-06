@@ -57,6 +57,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/counter"
+            prefetch={true}
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 shadow-lg transition"
           >
             <Shirt className="w-4 h-4" />
@@ -64,6 +65,7 @@ export default function DashboardPage() {
           </Link>
           <Link
             href="/deliveries"
+            prefetch={true}
             className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-4 py-3 rounded-xl text-xs flex items-center gap-2 border border-slate-700 transition"
           >
             <PackageCheck className="w-4 h-4 text-emerald-400" />
@@ -97,6 +99,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href="/counter"
+          prefetch={true}
           className={`text-xs font-bold underline px-3 py-1.5 rounded ${
             isTodaySarkariDay ? 'text-emerald-800 hover:bg-emerald-100' : 'text-amber-800 hover:bg-amber-100'
           }`}
@@ -187,6 +190,7 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/reports"
+            prefetch={true}
             className="text-xs text-emerald-700 font-semibold hover:underline flex items-center gap-1"
           >
             <span>تفصیلی رپورٹ دیکھیں</span>
@@ -230,7 +234,7 @@ export default function DashboardPage() {
           <h3 className="font-bold text-sm text-slate-900 urdu-compact">
             تازہ ترین کلیکشن رسیدات (Recent Receipts)
           </h3>
-          <Link href="/receipts" className="text-xs text-emerald-700 font-semibold hover:underline">
+          <Link href="/receipts" prefetch={true} className="text-xs text-emerald-700 font-semibold hover:underline">
             تمام رسیدات دیکھیں &rarr;
           </Link>
         </div>

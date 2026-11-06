@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { User, SettingsMap } from '@/types';
+import { SettingsMap } from '@/types';
 import { translations } from '@/lib/i18n';
 import { DEFAULT_SETTINGS } from '@/lib/seed-data';
 
@@ -17,6 +17,7 @@ interface AppContextType {
   isTodaySarkariDay: boolean;
   logout: () => Promise<void>;
   counterName: string;
+  isNavigating: boolean;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -26,10 +27,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<'ur' | 'en'>('ur');
   const [settings, setSettings] = useState<SettingsMap>(DEFAULT_SETTINGS);
   const [counterName] = useState<string>('کاؤنٹر 1 (Main)');
+  const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  // Load session & settings
+  // Load session & settings ONCE on initial mount (NOT on every route change)
   useEffect(() => {
     fetch('/api/auth/me')
       .then(res => res.json())
@@ -55,19 +57,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       })
       .catch(console.error);
-  }, [pathname, router]);
+  }, []); // Run only once on mount
+
+  // Clear navigation loading indicator on route change
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
 
   // Global Function Key Shortcuts (COL-11: F1 Counter, F2 Deliveries, F3 Receipts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing inside an input/textarea and pressing other keys, but allow F1/F2/F3
       if (e.key === 'F1') {
         e.preventDefault();
+        setIsNavigating(true);
         router.push('/counter');
       } else if (e.key === 'F2') {
         e.preventDefault();
+        setIsNavigating(true);
         router.push('/deliveries');
       } else if (e.key === 'F3') {
         e.preventDefault();
+        setIsNavigating(true);
         router.push('/receipts');
       }
     };
@@ -79,6 +90,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     await fetch('/api/auth/logout', { method: 'POST' });
     setUser(null);
     router.push('/login');
+    router.refresh();
   };
 
   const dayOfWeek = new Date().getDay();
@@ -99,9 +111,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isTodaySarkariDay,
         logout,
         counterName,
+        isNavigating,
       }}
     >
       <div dir={lang === 'ur' ? 'rtl' : 'ltr'} className={lang === 'ur' ? 'font-sans' : 'font-sans'}>
+        {/* Top Loading Progress Bar when navigating routes */}
+        {isNavigating && (
+          <div className="fixed top-0 left-0 right-0 h-1 bg-emerald-500 z-50 animate-pulse shadow-sm" />
+        )}
         {children}
       </div>
     </AppContext.Provider>

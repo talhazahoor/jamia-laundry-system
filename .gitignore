@@ -34,3 +34,5 @@ yarn-error.log*
 
 # Local database (keep .data directory structure if needed, or ignore local runtime DB)
 .data/
+
+.vercel
