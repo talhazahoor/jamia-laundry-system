@@ -18,18 +18,15 @@ import {
   RotateCcw,
   AlertTriangle,
   CheckCircle2,
-  Clock,
   User,
   Camera,
   ShieldAlert,
   Plus,
   Minus,
-  ReceiptText,
-  BadgeCheck,
 } from 'lucide-react';
 
 export default function CounterPage() {
-  const { user, t, settings, isTodaySarkariDay } = useApp();
+  const { lang, t, settings, isTodaySarkariDay } = useApp();
 
   // Search & Student state
   const [regNoInput, setRegNoInput] = useState('');
@@ -103,7 +100,7 @@ export default function CounterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'طالب علم کا ریکارڈ نہیں ملا');
+        throw new Error(data.error || t.student_not_found);
       }
 
       setStudent(data.student);
@@ -120,7 +117,7 @@ export default function CounterPage() {
         firstItemInputRef.current?.focus();
       }, 100);
     } catch (err: any) {
-      setStudentError(err.message || 'طالب علم تلاش کرنے میں خرابی پیش آئی');
+      setStudentError(err.message || t.student_not_found);
     } finally {
       setLoadingStudent(false);
     }
@@ -163,13 +160,13 @@ export default function CounterPage() {
 
   const handleSaveAndPrint = async () => {
     if (!student) {
-      alert('براہ کرم پہلے طالب علم کا انتخاب فرمائیں');
+      alert(t.no_student_selected);
       regNoInputRef.current?.focus();
       return;
     }
 
     if (totalPieces === 0) {
-      alert('براہ کرم کم از کم ایک شے کی تعداد درج فرمائیں');
+      alert(t.no_items_selected);
       return;
     }
 
@@ -210,14 +207,14 @@ export default function CounterPage() {
           setShowOverrideModal(true);
           return;
         }
-        throw new Error(data.error || 'رسید محفوظ نہیں ہو سکی');
+        throw new Error(data.error || 'Failed to save receipt');
       }
 
       setPrintedReceipt(data.receipt);
-      setSuccessToast(`رسید #${data.receipt.receipt_no} جاری ہو گئی`);
+      setSuccessToast(`Receipt #${data.receipt.receipt_no} ready`);
       handleReset();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`Error: ${err.message}`);
     } finally {
       setSaving(false);
     }
@@ -279,7 +276,7 @@ export default function CounterPage() {
                   lookupStudent();
                 }
               }}
-              placeholder="طالب علم کا رجسٹریشن نمبر درج کریں (مثلاً: 1234)..."
+              placeholder={t.search_student_hint}
               className="w-full px-3 py-2 text-xs font-mono font-semibold text-slate-900 focus:outline-none"
               autoFocus
             />
@@ -290,7 +287,7 @@ export default function CounterPage() {
               className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium px-4 py-2 flex items-center gap-1.5 transition shrink-0"
             >
               <Search className="w-3.5 h-3.5" />
-              <span>{loadingStudent ? 'تلاش...' : 'تلاش'}</span>
+              <span>{loadingStudent ? '...' : t.search_btn}</span>
             </button>
           </div>
 
@@ -303,9 +300,9 @@ export default function CounterPage() {
         </div>
 
         <div className="hidden sm:flex items-center gap-3 text-[11px] text-slate-500">
-          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono">Enter</kbd> تلاش</span>
-          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono font-bold text-emerald-700">F9</kbd> پرنٹ</span>
-          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono">Esc</kbd> نیا اندراج</span>
+          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono">Enter</kbd> {t.search_btn}</span>
+          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono font-bold text-emerald-700">F9</kbd> {t.print}</span>
+          <span><kbd className="bg-slate-100 px-1 py-0.5 rounded border font-mono">Esc</kbd> {t.clear_form}</span>
         </div>
       </div>
 
@@ -330,8 +327,8 @@ export default function CounterPage() {
                     </div>
                     <button
                       onClick={() => setShowWebcamModal(true)}
-                      className="absolute -bottom-1 -right-1 bg-slate-900 text-white p-1 rounded-md text-[9px]"
-                      title="تصویر تبدیل کریں"
+                      className="absolute -bottom-1 -right-1 bg-slate-800 text-white p-1 rounded-md text-[9px]"
+                      title="Photo"
                     >
                       <Camera className="w-2.5 h-2.5" />
                     </button>
@@ -340,9 +337,9 @@ export default function CounterPage() {
                   <div>
                     <div className="font-bold text-slate-900 text-sm leading-tight">{student.name}</div>
                     <div className="text-[11px] text-slate-500">
-                      ولدیت: <span className="text-slate-700">{student.father_name}</span> • کلاس: <span className="text-slate-700">{student.class_name}</span>
+                      {t.father_name}: <span className="text-slate-700">{student.father_name}</span> • {t.class_name}: <span className="text-slate-700">{student.class_name}</span>
                     </div>
-                    <div className="text-[10px] text-slate-400">رہائش: {student.iqamat}</div>
+                    <div className="text-[10px] text-slate-400">{t.iqamat}: {student.iqamat}</div>
                   </div>
                 </div>
 
@@ -354,7 +351,7 @@ export default function CounterPage() {
                     <span className={`inline-block text-[10px] px-2 py-0.2 rounded font-semibold ${
                       student.is_sarkari ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
                     }`}>
-                      {student.is_sarkari ? 'سرکاری مفت' : 'پرائیویٹ بل'}
+                      {student.is_sarkari ? t.sarkari_free : t.private_paid}
                     </span>
                   </div>
                 </div>
@@ -364,20 +361,20 @@ export default function CounterPage() {
               {hasExistingTodaySarkari && (
                 <div className="text-[11px] p-2 rounded bg-amber-50 border border-amber-200 text-amber-800 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>طالب علم آج پہلے ہی سرکاری کپڑے جمع کرا چکا ہے۔</span>
+                  <span>{t.duplicate_day_warning}</span>
                 </div>
               )}
             </div>
           ) : (
             <div className="bg-white rounded-xl p-4 border border-dashed border-slate-300 text-center text-slate-400 text-xs">
-              رجسٹریشن نمبر درج کر کے طالب علم منتخب فرمائیں (مثلاً: <button onClick={() => lookupStudent('1234')} className="text-emerald-700 font-mono underline font-bold">1234</button> یا <button onClick={() => lookupStudent('1236')} className="text-emerald-700 font-mono underline font-bold">1236</button>)
+              {t.no_student_selected} (e.g. <button onClick={() => lookupStudent('1234')} className="text-emerald-700 font-mono underline font-bold">1234</button> or <button onClick={() => lookupStudent('1236')} className="text-emerald-700 font-mono underline font-bold">1236</button>)
             </div>
           )}
 
           {/* Items Entry Grid */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-3.5 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="font-semibold text-slate-800 text-xs">کپڑوں کی اشیاء اور تعداد</span>
+              <span className="font-semibold text-slate-800 text-xs">{t.items_and_qty}</span>
 
               {/* Sarkari / Private toggle */}
               <div className="inline-flex rounded-lg p-0.5 bg-slate-100 border border-slate-200 text-[11px]">
@@ -385,7 +382,7 @@ export default function CounterPage() {
                   type="button"
                   onClick={() => {
                     if (!student?.is_sarkari) {
-                      alert('یہ طالب علم سرکاری لانڈری کے لیے رجسٹرڈ نہیں ہے');
+                      alert('This student is not registered for Sarkari laundry');
                       return;
                     }
                     if (!isTodaySarkariDay) setShowOverrideModal(true);
@@ -395,7 +392,7 @@ export default function CounterPage() {
                     laundryType === 'Sarkari' ? 'bg-blue-600 text-white' : 'text-slate-600'
                   }`}
                 >
-                  سرکاری (مفت)
+                  {t.sarkari_free}
                 </button>
                 <button
                   type="button"
@@ -404,7 +401,7 @@ export default function CounterPage() {
                     laundryType === 'Private' ? 'bg-amber-600 text-white' : 'text-slate-600'
                   }`}
                 >
-                  پرائیویٹ
+                  {t.private_paid}
                 </button>
               </div>
             </div>
@@ -414,6 +411,7 @@ export default function CounterPage() {
               {activeItems.map((item, idx) => {
                 const qty = quantities[item.id] || 0;
                 const isSelected = qty > 0;
+                const itemName = lang === 'en' ? (item.name_en || item.name_ur) : item.name_ur;
 
                 return (
                   <div
@@ -423,8 +421,8 @@ export default function CounterPage() {
                     }`}
                   >
                     <div>
-                      <div className="font-semibold text-slate-900 text-xs">{item.name_ur}</div>
-                      <div className="text-[10px] text-slate-400">{item.name_en}</div>
+                      <div className="font-semibold text-slate-900 text-xs">{itemName}</div>
+                      <div className="text-[10px] text-slate-400">{lang === 'en' ? item.name_ur : item.name_en}</div>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -432,7 +430,7 @@ export default function CounterPage() {
                         {laundryType === 'Private' ? (
                           <span className="text-slate-600 font-semibold">Rs {item.private_rate}</span>
                         ) : (
-                          <span className="text-blue-700">مفت</span>
+                          <span className="text-blue-700">{t.free}</span>
                         )}
                       </div>
 
@@ -485,21 +483,21 @@ export default function CounterPage() {
         {/* Right 5 Columns: Live Bill Slip & Actions */}
         <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3.5 sticky top-16">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs font-semibold text-slate-800">
-            <span>رسید کا پیش منظر (Live Receipt)</span>
+            <span>{t.live_receipt_slip}</span>
             <span className={`px-2 py-0.2 rounded text-[10px] font-bold ${
               laundryType === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
             }`}>
-              {laundryType === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
+              {laundryType === 'Sarkari' ? t.sarkari : t.private}
             </span>
           </div>
 
           <div className="text-xs space-y-1">
             <div className="flex justify-between text-slate-500">
-              <span>طالب علم:</span>
+              <span>{t.student_col}:</span>
               <span className="font-bold text-slate-900">{student ? student.name : '—'}</span>
             </div>
             <div className="flex justify-between text-slate-500">
-              <span>رجسٹریشن:</span>
+              <span>{t.registration_no}:</span>
               <span className="font-mono text-slate-800">{student ? student.reg_no : '—'}</span>
             </div>
           </div>
@@ -507,16 +505,19 @@ export default function CounterPage() {
           <div className="border-t border-b border-slate-100 py-2.5 space-y-1.5 text-xs">
             {activeItems
               .filter(i => (quantities[i.id] || 0) > 0)
-              .map(i => (
-                <div key={i.id} className="flex justify-between">
-                  <span className="text-slate-700">{i.name_ur} × {quantities[i.id]}</span>
-                  <span className="font-mono font-semibold text-slate-900">
-                    {laundryType === 'Private' ? `Rs ${quantities[i.id] * i.private_rate}` : 'Rs 0'}
-                  </span>
-                </div>
-              ))}
+              .map(i => {
+                const name = lang === 'en' ? (i.name_en || i.name_ur) : i.name_ur;
+                return (
+                  <div key={i.id} className="flex justify-between">
+                    <span className="text-slate-700">{name} × {quantities[i.id]}</span>
+                    <span className="font-mono font-semibold text-slate-900">
+                      {laundryType === 'Private' ? `Rs ${quantities[i.id] * i.private_rate}` : 'Rs 0'}
+                    </span>
+                  </div>
+                );
+              })}
             {totalPieces === 0 && (
-              <div className="text-slate-400 text-center py-2 text-[11px]">کوئی شے منتخب نہیں ہے</div>
+              <div className="text-slate-400 text-center py-2 text-[11px]">{t.no_items_selected}</div>
             )}
           </div>
 
@@ -525,7 +526,7 @@ export default function CounterPage() {
             type="text"
             value={notes}
             onChange={e => setNotes(e.target.value)}
-            placeholder="کوئی نوٹ یا خصوصی ہدایت..."
+            placeholder={t.notes_placeholder}
             className="w-full text-xs p-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
           />
 
@@ -541,7 +542,7 @@ export default function CounterPage() {
                     : 'bg-slate-100 text-slate-700'
                 }`}
               >
-                ادا شدہ (Paid)
+                {t.paid_cash}
               </button>
               <button
                 type="button"
@@ -552,7 +553,7 @@ export default function CounterPage() {
                     : 'bg-slate-100 text-slate-700'
                 }`}
               >
-                واپسی پر (Unpaid)
+                {t.unpaid_later}
               </button>
             </div>
           )}
@@ -560,13 +561,13 @@ export default function CounterPage() {
           {/* Total & Action */}
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1 text-xs">
             <div className="flex justify-between text-slate-500">
-              <span>کل کپڑے:</span>
-              <span className="font-mono font-bold text-slate-900">{totalPieces} عدد</span>
+              <span>{t.total_pieces}:</span>
+              <span className="font-mono font-bold text-slate-900">{totalPieces} {t.pieces}</span>
             </div>
             <div className="flex justify-between items-center text-sm font-bold pt-1 border-t border-slate-200">
-              <span>کل بل رقم:</span>
+              <span>{t.total_bill}</span>
               <span className="font-mono text-base text-slate-900">
-                {laundryType === 'Private' ? `Rs ${netTotalAmount}` : 'مفت (سرکاری)'}
+                {laundryType === 'Private' ? `Rs ${netTotalAmount}` : `Rs 0 (${t.free})`}
               </span>
             </div>
           </div>
@@ -579,7 +580,7 @@ export default function CounterPage() {
               className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg text-xs transition shadow-sm flex items-center justify-center gap-1.5"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>{saving ? 'محفوظ ہو رہا ہے...' : 'محفوظ کریں اور پرنٹ نکالیں (F9)'}</span>
+              <span>{saving ? t.saving : t.save_and_print}</span>
             </button>
 
             <button
@@ -588,7 +589,7 @@ export default function CounterPage() {
               className="w-full py-1.5 text-slate-500 hover:text-slate-700 text-xs transition flex items-center justify-center gap-1"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>صاف کریں (Esc)</span>
+              <span>{t.clear_form}</span>
             </button>
           </div>
         </div>
@@ -601,16 +602,16 @@ export default function CounterPage() {
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="font-bold text-slate-900 flex items-center gap-1.5 text-sm">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
-              <span>ایڈمن خصوصی اجازت</span>
+              <span>Admin Override</span>
             </div>
             <p className="text-slate-600 leading-normal">
-              آج سرکاری کلیکشن کا مقررہ دن نہیں ہے۔ سرکاری رسید جاری کرنے کی وجہ درج فرمائیں:
+              Today is not a scheduled Sarkari collection day. Please specify the reason for override:
             </p>
             <textarea
               rows={2}
               value={overrideReason}
               onChange={e => setOverrideReason(e.target.value)}
-              placeholder="وجہ تحریر کریں..."
+              placeholder="Reason for override..."
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
             <div className="flex justify-end gap-2">
@@ -622,7 +623,7 @@ export default function CounterPage() {
                 }}
                 className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
               >
-                کینسل
+                {t.cancel}
               </button>
               <button
                 type="button"
@@ -633,7 +634,7 @@ export default function CounterPage() {
                 }}
                 className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg disabled:opacity-50 font-semibold"
               >
-                اجازت دیں
+                Authorize
               </button>
             </div>
           </div>

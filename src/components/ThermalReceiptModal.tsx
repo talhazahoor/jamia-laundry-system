@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import { Receipt, SettingsMap } from '@/types';
 import { Printer, X, Copy, QrCode } from 'lucide-react';
 import { generateReceiptQRDataUrl } from '@/lib/thermal-printer';
@@ -18,6 +20,9 @@ export default function ThermalReceiptModal({
   onClose,
   isDuplicate = false,
 }: ThermalReceiptModalProps) {
+  const { lang } = useApp();
+  const t = translations[lang];
+
   const [qrCodeData, setQrCodeData] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'student' | 'laundry'>('student');
 
@@ -45,8 +50,8 @@ export default function ThermalReceiptModal({
               <Printer className="w-4 h-4 text-emerald-400" />
             </div>
             <div>
-              <span className="font-bold text-sm font-nastaliq block leading-tight">
-                پرنٹر رسید (Thermal Receipt)
+              <span className="font-bold text-sm block leading-tight">
+                {lang === 'en' ? 'Thermal Receipt' : 'پرنٹر رسید (Thermal Receipt)'}
               </span>
               <span className="text-[10px] text-emerald-300 font-mono">
                 {receipt.receipt_no}
@@ -59,7 +64,7 @@ export default function ThermalReceiptModal({
               className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold transition shadow-md"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>پرنٹ (Print)</span>
+              <span>{t.print}</span>
             </button>
             <button
               onClick={onClose}
@@ -79,7 +84,7 @@ export default function ThermalReceiptModal({
                 activeTab === 'student' ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 border'
               }`}
             >
-              طالب علم کی کاپی (Student Copy)
+              {lang === 'en' ? 'Student Copy' : 'طالب علم کی کاپی (Student Copy)'}
             </button>
             <button
               onClick={() => setActiveTab('laundry')}
@@ -87,7 +92,7 @@ export default function ThermalReceiptModal({
                 activeTab === 'laundry' ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 border'
               }`}
             >
-              لانڈری بیگ ٹیگ (Bag Tag)
+              {lang === 'en' ? 'Bag Tag' : 'لانڈری بیگ ٹیگ (Bag Tag)'}
             </button>
           </div>
         )}
@@ -103,23 +108,25 @@ export default function ThermalReceiptModal({
             {/* DUPLICATE STAMP */}
             {(isDuplicate || receipt.reprint_count > 0 || receipt.is_duplicate) && (
               <div className="border-2 border-red-600 text-red-600 text-center font-bold py-1 mb-2 text-sm tracking-widest uppercase">
-                *** مثنیٰ / DUPLICATE (Copy #{receipt.reprint_count || 1}) ***
+                *** {lang === 'en' ? 'DUPLICATE' : 'مثنیٰ / DUPLICATE'} (Copy #{receipt.reprint_count || 1}) ***
               </div>
             )}
 
             {/* Header */}
             <div className="text-center pb-2 border-b border-dashed border-black">
               <div className="font-bold text-sm urdu-compact leading-tight">
-                {settings.jamia_name}
+                {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}
               </div>
-              <div className="font-bold text-xs uppercase tracking-wide">
-                {settings.jamia_name_en}
-              </div>
+              {settings.jamia_name_en && (
+                <div className="font-bold text-xs uppercase tracking-wide">
+                  {settings.jamia_name_en}
+                </div>
+              )}
               <div className="text-[11px] font-semibold text-emerald-800">
                 {settings.laundry_name}
               </div>
               <div className="text-[10px] text-slate-600">
-                فون: {settings.phone}
+                {lang === 'en' ? 'Phone:' : 'فون:'} {settings.phone}
               </div>
               <div className="text-[10px] text-slate-600">
                 {settings.address}
@@ -129,34 +136,34 @@ export default function ThermalReceiptModal({
             {/* Receipt Meta */}
             <div className="py-2 border-b border-dashed border-black text-[11px] space-y-0.5">
               <div className="flex justify-between font-bold text-sm">
-                <span>رسید: {receipt.receipt_no}</span>
-                <span className={`px-1.5 py-0.2 rounded text-white ${
+                <span>{t.receipt_col}: {receipt.receipt_no}</span>
+                <span className={`px-1.5 py-0.5 rounded text-white text-[10px] ${
                   receipt.type === 'Sarkari' ? 'bg-blue-700' : 'bg-amber-600'
                 }`}>
-                  {receipt.type === 'Sarkari' ? 'سرکاری (مفت)' : 'پرائیویٹ (بل)'}
+                  {receipt.type === 'Sarkari' ? t.sarkari_free : t.private_paid}
                 </span>
               </div>
               <div className="flex justify-between text-[10px] text-slate-700">
-                <span>تاریخ: {new Date(receipt.date_time).toLocaleDateString()}</span>
-                <span>وقت: {new Date(receipt.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <span>{lang === 'en' ? 'Date:' : 'تاریخ:'} {new Date(receipt.date_time).toLocaleDateString()}</span>
+                <span>{lang === 'en' ? 'Time:' : 'وقت:'} {new Date(receipt.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
               <div className="text-[10px] text-slate-700">
-                آپریٹر: {receipt.operator_name}
+                {t.operator_col}: {receipt.operator_name}
               </div>
             </div>
 
             {/* Student Info */}
             <div className="py-2 border-b border-dashed border-black text-[11px] space-y-0.5">
               <div className="flex justify-between font-bold">
-                <span>رجسٹریشن: {receipt.student_reg_no}</span>
-                <span>نام: {receipt.student_name}</span>
+                <span>{t.registration_no}: {receipt.student_reg_no}</span>
+                <span>{t.student_col}: {receipt.student_name}</span>
               </div>
               <div className="flex justify-between text-[10px]">
-                <span>ولدیت: {receipt.father_name}</span>
-                <span>کلاس: {receipt.class_name} ({receipt.section})</span>
+                <span>{t.father_name}: {receipt.father_name}</span>
+                <span>{t.class_name}: {receipt.class_name} ({receipt.section})</span>
               </div>
               <div className="text-[10px] truncate">
-                رہائش: {receipt.iqamat}
+                {t.iqamat}: {receipt.iqamat}
               </div>
             </div>
 
@@ -165,20 +172,20 @@ export default function ThermalReceiptModal({
               {receipt.type === 'Private' ? (
                 <>
                   <div className="grid grid-cols-12 font-bold text-[10px] pb-1 border-b border-slate-300">
-                    <span className="col-span-6">شے (Item)</span>
-                    <span className="col-span-2 text-center">تعداد</span>
-                    <span className="col-span-2 text-right">ریٹ</span>
-                    <span className="col-span-2 text-right">رقم</span>
+                    <span className="col-span-6">{lang === 'en' ? 'Item' : 'شے (Item)'}</span>
+                    <span className="col-span-2 text-center">{lang === 'en' ? 'Qty' : 'تعداد'}</span>
+                    <span className="col-span-2 text-end">{lang === 'en' ? 'Rate' : 'ریٹ'}</span>
+                    <span className="col-span-2 text-end">{lang === 'en' ? 'Total' : 'رقم'}</span>
                   </div>
                   <div className="divide-y divide-slate-100 text-[11px]">
                     {receipt.items?.map((item, idx) => (
                       <div key={idx} className="grid grid-cols-12 py-0.5 items-center">
                         <span className="col-span-6 font-semibold urdu-compact leading-none">
-                          {item.item_name_ur} <span className="text-[9px] text-slate-500 font-normal">({item.item_name_en})</span>
+                          {lang === 'en' ? (item.item_name_en || item.item_name_ur) : item.item_name_ur}
                         </span>
                         <span className="col-span-2 text-center font-bold">{item.quantity}</span>
-                        <span className="col-span-2 text-right text-[10px]">{item.rate_at_time}</span>
-                        <span className="col-span-2 text-right font-medium">{item.amount}</span>
+                        <span className="col-span-2 text-end text-[10px]">{item.rate_at_time}</span>
+                        <span className="col-span-2 text-end font-medium">{item.amount}</span>
                       </div>
                     ))}
                   </div>
@@ -186,14 +193,14 @@ export default function ThermalReceiptModal({
               ) : (
                 <>
                   <div className="grid grid-cols-12 font-bold text-[10px] pb-1 border-b border-slate-300">
-                    <span className="col-span-9">شے (Item)</span>
-                    <span className="col-span-3 text-center">تعداد (Qty)</span>
+                    <span className="col-span-9">{lang === 'en' ? 'Item' : 'شے (Item)'}</span>
+                    <span className="col-span-3 text-center">{lang === 'en' ? 'Qty' : 'تعداد'}</span>
                   </div>
                   <div className="divide-y divide-slate-100 text-[11px]">
                     {receipt.items?.map((item, idx) => (
                       <div key={idx} className="grid grid-cols-12 py-0.5 items-center">
                         <span className="col-span-9 font-semibold urdu-compact leading-none">
-                          {item.item_name_ur} <span className="text-[9px] text-slate-500 font-normal">({item.item_name_en})</span>
+                          {lang === 'en' ? (item.item_name_en || item.item_name_ur) : item.item_name_ur}
                         </span>
                         <span className="col-span-3 text-center font-bold">{item.quantity}</span>
                       </div>
@@ -206,28 +213,28 @@ export default function ThermalReceiptModal({
             {/* Totals */}
             <div className="py-2 border-b border-dashed border-black space-y-1 text-xs">
               <div className="flex justify-between font-bold">
-                <span>کل کپڑے (Pieces):</span>
-                <span className="text-sm">{receipt.total_pieces} عدد</span>
+                <span>{t.total_clothes_pieces}:</span>
+                <span className="text-sm">{receipt.total_pieces} {t.pieces}</span>
               </div>
 
               {receipt.type === 'Private' && (
                 <>
                   {receipt.discount > 0 && (
                     <div className="flex justify-between text-slate-600 text-[11px]">
-                      <span>رعایت (Discount):</span>
+                      <span>{lang === 'en' ? 'Discount:' : 'رعایت:'}</span>
                       <span>Rs {receipt.discount}</span>
                     </div>
                   )}
                   <div className="flex justify-between font-bold text-sm">
-                    <span>کل بل (Total Bill):</span>
+                    <span>{t.total_bill}</span>
                     <span>Rs {receipt.total_amount}</span>
                   </div>
                   <div className="flex justify-between font-bold text-[11px] pt-1">
-                    <span>ادائیگی (Status):</span>
-                    <span className={`px-2 py-0.5 rounded ${
+                    <span>{t.payment_situation}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] ${
                       receipt.payment_status === 'Paid' ? 'bg-emerald-700 text-white' : 'bg-red-700 text-white'
                     }`}>
-                      {receipt.payment_status === 'Paid' ? 'ادا شدہ (PAID)' : 'واجب الادا (UNPAID)'}
+                      {receipt.payment_status === 'Paid' ? (lang === 'en' ? 'PAID' : 'ادا شدہ (PAID)') : (lang === 'en' ? 'UNPAID' : 'واجب الادا (UNPAID)')}
                     </span>
                   </div>
                 </>
@@ -235,19 +242,19 @@ export default function ThermalReceiptModal({
 
               {receipt.type === 'Sarkari' && (
                 <div className="flex justify-between font-bold text-slate-700 text-[11px]">
-                  <span>چارجز:</span>
-                  <span>مفت (سرکاری رجسٹریشن)</span>
+                  <span>{lang === 'en' ? 'Charges:' : 'چارجز:'}</span>
+                  <span>{lang === 'en' ? 'Free (Sarkari Registration)' : 'مفت (سرکاری رجسٹریشن)'}</span>
                 </div>
               )}
 
               <div className="flex justify-between text-[11px] pt-1 font-semibold text-emerald-900">
-                <span>متوقع واپسی تاریخ:</span>
+                <span>{lang === 'en' ? 'Expected Return:' : 'متوقع واپسی تاریخ:'}</span>
                 <span>{receipt.expected_date}</span>
               </div>
 
               {receipt.notes && (
                 <div className="text-[10px] text-slate-600 italic pt-0.5">
-                  نوٹ: {receipt.notes}
+                  {lang === 'en' ? 'Notes:' : 'نوٹ:'} {receipt.notes}
                 </div>
               )}
             </div>
@@ -271,7 +278,7 @@ export default function ThermalReceiptModal({
             {/* Footer */}
             <div className="pt-2 text-center text-[10px] text-slate-700 leading-tight">
               <div className="urdu-compact mb-1">{settings.receipt_footer}</div>
-              <div>Please bring this slip when collecting clean clothes.</div>
+              <div>{lang === 'en' ? 'Please bring this slip when collecting clean clothes.' : 'کپڑے واپس لیتے وقت یہ رسید ہمراہ لانا ضروری ہے۔'}</div>
             </div>
           </div>
         </div>
@@ -279,21 +286,21 @@ export default function ThermalReceiptModal({
         {/* Modal Bottom Actions */}
         <div className="bg-slate-50 p-4 border-t border-slate-200 flex items-center justify-between text-xs">
           <div className="text-slate-500 font-mono">
-            کاغذ سائز: <span className="font-bold text-slate-800">{settings.paper_width}</span> | پرنٹر: <span className="font-bold text-slate-800">ESC-POS</span>
+            {lang === 'en' ? 'Paper Size:' : 'کاغذ سائز:'} <span className="font-bold text-slate-800">{settings.paper_width}</span> | ESC-POS
           </div>
           <div className="flex gap-2">
             <button
               onClick={onClose}
               className="bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-xl border border-slate-300 font-semibold transition"
             >
-              بند کریں (Close)
+              {t.close}
             </button>
             <button
               onClick={triggerDirectPrint}
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-xl transition flex items-center gap-2 shadow"
             >
               <Printer className="w-4 h-4" />
-              <span>پرنٹ کریں (Ctrl+P)</span>
+              <span>{t.print}</span>
             </button>
           </div>
         </div>

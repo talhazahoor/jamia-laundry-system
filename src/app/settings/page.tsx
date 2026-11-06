@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import { SettingsMap } from '@/types';
 import {
   Settings as SettingsIcon,
@@ -15,7 +16,9 @@ import {
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { user, settings, updateLocalSettings } = useApp();
+  const { user, settings, updateLocalSettings, lang } = useApp();
+  const t = translations[lang];
+
   const [form, setForm] = useState<SettingsMap>(settings);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -42,9 +45,9 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error(data.error || 'Failed to update settings');
 
       updateLocalSettings(data.settings);
-      setSuccess('ترتیبات کامیابی سے محفوظ ہو گئیں');
+      setSuccess(t.settings_saved);
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     } finally {
       setSaving(false);
     }
@@ -62,13 +65,13 @@ export default function SettingsPage() {
   };
 
   const daysOfWeek = [
-    { num: 1, ur: 'پیر (Mon)' },
-    { num: 2, ur: 'منگل (Tue)' },
-    { num: 3, ur: 'بدھ (Wed)' },
-    { num: 4, ur: 'جمعرات (Thu)' },
-    { num: 5, ur: 'جمعہ (Fri)' },
-    { num: 6, ur: 'ہفتہ (Sat)' },
-    { num: 0, ur: 'اتوار (Sun)' },
+    { num: 1, label: t.mon },
+    { num: 2, label: t.tue },
+    { num: 3, label: t.wed },
+    { num: 4, label: t.thu },
+    { num: 5, label: t.fri },
+    { num: 6, label: t.sat },
+    { num: 0, label: t.sun },
   ];
 
   return (
@@ -77,9 +80,9 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">نظام کی ترتیبات (System Settings)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.settings_title}</h1>
           <p className="text-[11px] text-slate-500">
-            ادارہ جاتی کوائف، پرنٹر سیٹ اپ، سرکاری ایام اور بیک اپ
+            {t.settings_subtitle}
           </p>
         </div>
       </div>
@@ -97,12 +100,12 @@ export default function SettingsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
           <div className="font-semibold text-slate-800 pb-2 border-b text-xs flex items-center gap-2">
             <Building className="w-4 h-4 text-slate-500" />
-            <span>جامعہ اور شعبہ لانڈری کے کوائف</span>
+            <span>{t.institution_heading}</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">جامعہ کا نام (اردو) *</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.jamia_ur} *</label>
               <input
                 type="text"
                 required
@@ -112,7 +115,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">English Name *</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.jamia_en} *</label>
               <input
                 type="text"
                 required
@@ -122,7 +125,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">لانڈری نام *</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.laundry_dept} *</label>
               <input
                 type="text"
                 required
@@ -132,7 +135,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">فون نمبر *</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.phone_label}</label>
               <input
                 type="text"
                 required
@@ -142,7 +145,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">مکمل پتہ *</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.address} *</label>
               <input
                 type="text"
                 required
@@ -158,12 +161,12 @@ export default function SettingsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
           <div className="font-semibold text-slate-800 pb-2 border-b text-xs flex items-center gap-2">
             <Calendar className="w-4 h-4 text-slate-500" />
-            <span>سرکاری کلیکشن کے ایام و واپسی کی مدت</span>
+            <span>{t.schedule_heading}</span>
           </div>
 
           <div>
             <label className="block text-[11px] font-medium text-slate-600 mb-1.5">
-              مقررہ دن منتخب کریں (ڈیفالٹ: منگل اور جمعہ):
+              {t.select_days_desc}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {daysOfWeek.map(d => {
@@ -179,7 +182,7 @@ export default function SettingsPage() {
                         : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    {d.ur} {isSelected && '✓'}
+                    {d.label} {isSelected && '✓'}
                   </button>
                 );
               })}
@@ -189,7 +192,7 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div>
               <label className="block text-[11px] font-medium text-slate-700 mb-1">
-                سرکاری متوقع واپسی (دن):
+                {t.sarkari_turnaround_days}
               </label>
               <input
                 type="number"
@@ -202,7 +205,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-[11px] font-medium text-slate-700 mb-1">
-                پرائیویٹ متوقع واپسی (دن):
+                {t.private_turnaround_days}
               </label>
               <input
                 type="number"
@@ -220,30 +223,30 @@ export default function SettingsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
           <div className="font-semibold text-slate-800 pb-2 border-b text-xs flex items-center gap-2">
             <Printer className="w-4 h-4 text-slate-500" />
-            <span>تھرمل پرنٹر فارمیٹ</span>
+            <span>{t.printer_heading}</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">کاغذ کا سائز:</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.paper_width}</label>
               <select
                 value={form.paper_width}
                 onChange={e => setForm({ ...form, paper_width: e.target.value as any })}
                 className="w-full p-2 border rounded-lg font-medium"
               >
-                <option value="80mm">80 mm (معیاری)</option>
-                <option value="58mm">58 mm (منی پورٹیبل)</option>
+                <option value="80mm">{t.standard_80mm}</option>
+                <option value="58mm">{t.portable_58mm}</option>
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-slate-700 mb-1">پرنٹ کاپیاں:</label>
+              <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.print_copies}</label>
               <select
                 value={form.print_copies}
                 onChange={e => setForm({ ...form, print_copies: Number(e.target.value) as any })}
                 className="w-full p-2 border rounded-lg font-medium"
               >
-                <option value={1}>1 کاپی (طالب علم)</option>
-                <option value={2}>2 کاپیاں (طالب علم + لانڈری بیگ)</option>
+                <option value={1}>{t.copy_student}</option>
+                <option value={2}>{t.copy_both}</option>
               </select>
             </div>
             <div className="flex items-center gap-2 pt-5">
@@ -255,7 +258,7 @@ export default function SettingsPage() {
                 className="w-3.5 h-3.5 text-emerald-600 rounded"
               />
               <label htmlFor="printBarcode" className="font-medium text-slate-800 cursor-pointer">
-                کیو آر / بارکوڈ شامل کریں
+                {t.print_barcode}
               </label>
             </div>
           </div>
@@ -268,7 +271,7 @@ export default function SettingsPage() {
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-5 py-2 rounded-lg text-xs shadow-sm flex items-center gap-1.5 transition"
           >
             <Save className="w-3.5 h-3.5" />
-            <span>{saving ? 'محفوظ ہو رہا ہے...' : 'ترتیبات محفوظ کریں'}</span>
+            <span>{saving ? t.saving : t.save_settings}</span>
           </button>
         </div>
       </form>
@@ -276,26 +279,26 @@ export default function SettingsPage() {
       {/* Backup and Restore Box */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
         <div className="font-semibold text-slate-800 pb-2 border-b text-xs">
-          ڈیٹا بیک اپ (Backup)
+          {t.backup_title}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex flex-col justify-between">
             <p className="text-slate-500 mb-3 text-[11px]">
-              تمام طلبہ، رسیدات اور ریٹ لسٹ کا مکمل ڈیٹا بیس بیک اپ محفوظ کریں۔
+              {t.backup_desc}
             </p>
             <button
               onClick={() => window.location.href = '/api/backup'}
               className="bg-slate-900 hover:bg-slate-800 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>بیک اپ ڈاؤن لوڈ کریں</span>
+              <span>{t.backup_download}</span>
             </button>
           </div>
 
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex flex-col justify-between">
             <p className="text-slate-500 mb-2 text-[11px]">
-              سابقہ JSON فائل سے ڈیٹا بحال کریں:
+              {t.restore_desc}
             </p>
             <input
               type="file"
@@ -306,7 +309,7 @@ export default function SettingsPage() {
             <button
               onClick={async () => {
                 if (!restoreFile) return;
-                if (!confirm('کیا آپ واقعی بیک اپ بحال کرنا چاہتے ہیں؟')) return;
+                if (!confirm(t.confirm_restore)) return;
                 setRestoring(true);
                 try {
                   const text = await restoreFile.text();
@@ -317,7 +320,7 @@ export default function SettingsPage() {
                     body: JSON.stringify(parsed),
                   });
                   if (!res.ok) throw new Error('Restore failed');
-                  alert('بیک اپ کامیابی سے بحال ہو گیا!');
+                  alert(t.restore_success);
                   window.location.reload();
                 } catch (err: any) {
                   alert(err.message);
@@ -329,7 +332,7 @@ export default function SettingsPage() {
               className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5"
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>{restoring ? 'بحالی جاری...' : 'ڈیٹا بیس بحال کریں'}</span>
+              <span>{restoring ? t.restoring_label : t.restore_btn}</span>
             </button>
           </div>
         </div>

@@ -5,7 +5,6 @@ import { useApp } from '@/context/AppContext';
 import { Receipt } from '@/types';
 import ThermalReceiptModal from '@/components/ThermalReceiptModal';
 import {
-  ReceiptText,
   Printer,
   Ban,
   Search,
@@ -13,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export default function ReceiptsPage() {
-  const { user, settings } = useApp();
+  const { lang, user, settings, t } = useApp();
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
@@ -88,9 +87,20 @@ export default function ReceiptsPage() {
       setCancelReason('');
       fetchReceipts();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`Error: ${err.message}`);
     } finally {
       setCancelLoading(false);
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'Delivered': return t.delivered;
+      case 'Ready': return t.ready;
+      case 'In Process': return t.in_process;
+      case 'Received': return t.received;
+      case 'Cancelled': return t.cancelled;
+      default: return status;
     }
   };
 
@@ -111,9 +121,9 @@ export default function ReceiptsPage() {
       {/* Header & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">تمام جاری شدہ رسیدات (Receipts Directory)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.receipts_title}</h1>
           <p className="text-[11px] text-slate-500">
-            تمام سرکاری اور پرائیویٹ رسیدات کی تفصیل، دوبارہ پرنٹ اور منسوخی
+            {t.receipts_subtitle}
           </p>
         </div>
 
@@ -122,7 +132,7 @@ export default function ReceiptsPage() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="رسید نمبر یا طالب علم..."
+            placeholder={t.search_receipts}
             className="w-full text-xs pl-3 pr-8 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
           />
           <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
@@ -134,7 +144,7 @@ export default function ReceiptsPage() {
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-1 text-slate-500 font-medium text-[11px]">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <span>فلٹر:</span>
+            <span>{t.filter}</span>
           </div>
 
           <select
@@ -142,9 +152,9 @@ export default function ReceiptsPage() {
             onChange={e => setFilterType(e.target.value)}
             className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
           >
-            <option value="All">تمام اقسام (All)</option>
-            <option value="Sarkari">صرف سرکاری (Sarkari)</option>
-            <option value="Private">صرف پرائیویٹ (Private)</option>
+            <option value="All">{t.all} ({lang === 'en' ? 'Sarkari & Private' : 'تمام'})</option>
+            <option value="Sarkari">{t.sarkari}</option>
+            <option value="Private">{t.private}</option>
           </select>
 
           <select
@@ -152,12 +162,12 @@ export default function ReceiptsPage() {
             onChange={e => setFilterStatus(e.target.value)}
             className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
           >
-            <option value="All">تمام حالتیں (All)</option>
-            <option value="Received">موصول شدہ</option>
-            <option value="In Process">زیر دھلائی</option>
-            <option value="Ready">تیار</option>
-            <option value="Delivered">واپس شدہ</option>
-            <option value="Cancelled">منسوخ شدہ</option>
+            <option value="All">{t.all} {t.status}</option>
+            <option value="Received">{t.received}</option>
+            <option value="In Process">{t.in_process}</option>
+            <option value="Ready">{t.ready}</option>
+            <option value="Delivered">{t.delivered}</option>
+            <option value="Cancelled">{t.cancelled}</option>
           </select>
 
           <select
@@ -165,14 +175,14 @@ export default function ReceiptsPage() {
             onChange={e => setFilterPayment(e.target.value)}
             className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
           >
-            <option value="All">ادائیگی: تمام</option>
-            <option value="Paid">ادا شدہ</option>
-            <option value="Unpaid">واجب الادا</option>
+            <option value="All">{t.all} {t.payment_situation}</option>
+            <option value="Paid">{t.paid}</option>
+            <option value="Unpaid">{t.unpaid}</option>
           </select>
         </div>
 
         <span className="text-slate-400 text-[11px] font-mono">
-          کل رسیدات: {filtered.length}
+          {lang === 'en' ? 'Total:' : 'کل رسیدات:'} {filtered.length}
         </span>
       </div>
 
@@ -182,26 +192,30 @@ export default function ReceiptsPage() {
           <table className="w-full text-xs text-right">
             <thead className="bg-slate-50 text-[11px] text-slate-500 font-semibold border-b border-slate-200">
               <tr>
-                <th className="p-2.5">رسید نمبر</th>
-                <th className="p-2.5">قسم</th>
-                <th className="p-2.5">طالب علم</th>
-                <th className="p-2.5">کلاس / ہاسٹل</th>
-                <th className="p-2.5 text-center">کپڑے</th>
-                <th className="p-2.5 text-left">بل</th>
-                <th className="p-2.5 text-center">ادائیگی</th>
-                <th className="p-2.5 text-center">حالت</th>
-                <th className="p-2.5">تاریخ</th>
-                <th className="p-2.5 text-center">ایکشن</th>
+                <th className="p-2.5">{t.receipt_col}</th>
+                <th className="p-2.5">{t.type_col}</th>
+                <th className="p-2.5">{t.student_col}</th>
+                <th className="p-2.5">{t.class_name}</th>
+                <th className="p-2.5 text-center">{t.pieces_col}</th>
+                <th className="p-2.5 text-left">{t.amount_col}</th>
+                <th className="p-2.5 text-center">{t.payment_situation}</th>
+                <th className="p-2.5 text-center">{t.status_col}</th>
+                <th className="p-2.5">{lang === 'en' ? 'Date' : 'تاریخ'}</th>
+                <th className="p-2.5 text-center">{t.actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">
+                    {lang === 'en' ? 'Loading...' : 'لوڈ ہو رہا ہے...'}
+                  </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">کوئی رسید نہیں ملی</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">
+                    {lang === 'en' ? 'No receipts found' : 'کوئی رسید نہیں ملی'}
+                  </td>
                 </tr>
               ) : (
                 filtered.map(rcp => (
@@ -218,7 +232,7 @@ export default function ReceiptsPage() {
                       <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
                         rcp.type === 'Sarkari' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
                       }`}>
-                        {rcp.type === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
+                        {rcp.type === 'Sarkari' ? t.sarkari : t.private}
                       </span>
                     </td>
                     <td className="p-2.5">
@@ -233,7 +247,7 @@ export default function ReceiptsPage() {
                       {rcp.total_pieces}
                     </td>
                     <td className="p-2.5 text-left font-mono font-bold text-slate-900">
-                      {rcp.type === 'Private' ? `Rs ${rcp.total_amount}` : 'مفت'}
+                      {rcp.type === 'Private' ? `Rs ${rcp.total_amount}` : t.free}
                     </td>
                     <td className="p-2.5 text-center">
                       <span className={`px-2 py-0.2 rounded text-[10px] font-medium ${
@@ -241,7 +255,7 @@ export default function ReceiptsPage() {
                           ? 'bg-emerald-50 text-emerald-700'
                           : 'bg-rose-50 text-rose-700'
                       }`}>
-                        {rcp.payment_status === 'Paid' ? 'ادا شدہ' : 'بقایا'}
+                        {rcp.payment_status === 'Paid' ? t.paid : t.unpaid}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
@@ -252,7 +266,7 @@ export default function ReceiptsPage() {
                           ? 'bg-rose-50 text-rose-600'
                           : 'bg-slate-100 text-slate-700'
                       }`}>
-                        {rcp.status === 'Delivered' ? 'واپس شدہ' : rcp.status === 'Cancelled' ? 'منسوخ' : rcp.status}
+                        {getStatusLabel(rcp.status)}
                       </span>
                     </td>
                     <td className="p-2.5 text-slate-500 font-mono text-[11px]">
@@ -263,7 +277,7 @@ export default function ReceiptsPage() {
                         <button
                           onClick={() => handleReprint(rcp)}
                           className="p-1 rounded text-slate-500 hover:text-emerald-600 hover:bg-slate-100 transition"
-                          title="پرنٹ کریں"
+                          title={t.reprint}
                         >
                           <Printer className="w-3.5 h-3.5" />
                         </button>
@@ -272,7 +286,7 @@ export default function ReceiptsPage() {
                           <button
                             onClick={() => setCancellingReceipt(rcp)}
                             className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-100 transition"
-                            title="منسوخ کریں"
+                            title={t.cancel_receipt}
                           >
                             <Ban className="w-3.5 h-3.5" />
                           </button>
@@ -292,16 +306,16 @@ export default function ReceiptsPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="font-bold text-slate-900 text-sm">
-              رسید منسوخ کریں ({cancellingReceipt.receipt_no})
+              {lang === 'en' ? `Cancel Receipt (${cancellingReceipt.receipt_no})` : `رسید منسوخ کریں (${cancellingReceipt.receipt_no})`}
             </div>
             <p className="text-slate-600">
-              رسید منسوخ کرنے کی ٹھوس وجہ درج فرمائیں (آڈٹ لاگ میں محفوظ کی جائے گی):
+              {t.cancel_reason}
             </p>
             <textarea
               rows={2}
               value={cancelReason}
               onChange={e => setCancelReason(e.target.value)}
-              placeholder="منسوخی کی وجہ..."
+              placeholder={lang === 'en' ? 'Reason for cancellation...' : 'منسوخی کی وجہ...'}
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
             />
             <div className="flex justify-end gap-2">
@@ -309,14 +323,14 @@ export default function ReceiptsPage() {
                 onClick={() => setCancellingReceipt(null)}
                 className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
               >
-                کینسل
+                {t.cancel}
               </button>
               <button
                 disabled={!cancelReason.trim() || cancelLoading}
                 onClick={handleCancelReceipt}
                 className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-lg font-semibold"
               >
-                {cancelLoading ? 'منسوخ ہو رہا ہے...' : 'منسوخ کریں'}
+                {cancelLoading ? '...' : t.cancel_receipt}
               </button>
             </div>
           </div>

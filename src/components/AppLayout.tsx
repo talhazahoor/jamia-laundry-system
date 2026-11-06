@@ -21,7 +21,6 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
-  Sparkles,
 } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -60,7 +59,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const navSections = [
     {
-      title: 'مرکزی ڈیسک (Operations)',
+      title: t.ops_section,
       items: [
         { href: '/', label: t.nav_dashboard, icon: LayoutDashboard },
         { href: '/counter', label: t.nav_collection, icon: Shirt, keyHint: 'F1' },
@@ -69,7 +68,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       ],
     },
     {
-      title: 'ریکارڈز و رپورٹس (Data)',
+      title: t.data_section,
       items: [
         { href: '/students', label: t.nav_students, icon: Users },
         { href: '/items', label: t.nav_items, icon: Tags },
@@ -79,7 +78,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     ...(user?.role === 'Administrator'
       ? [
           {
-            title: 'ترتیبات (Admin)',
+            title: t.admin_section,
             items: [
               { href: '/settings', label: t.nav_settings, icon: Settings },
               { href: '/users', label: t.nav_users, icon: ShieldCheck },
@@ -88,6 +87,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         ]
       : []),
   ];
+
+  const jamiaDisplayName = lang === 'en' ? settings.jamia_name_en : settings.jamia_name;
+  const laundryDisplayName = lang === 'en' ? (settings.laundry_name_en || 'Laundry Department') : settings.laundry_name;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex text-xs">
@@ -109,14 +111,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               href="/"
               prefetch={true}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-2.5 truncate"
             >
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-sm text-sm">
-                ج
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-sm text-sm shrink-0">
+                {lang === 'en' ? 'J' : 'ج'}
               </div>
-              <div className="leading-tight">
-                <div className="font-bold text-white text-xs">{settings.jamia_name}</div>
-                <div className="text-[11px] text-slate-400 font-medium">{settings.laundry_name}</div>
+              <div className="leading-tight truncate">
+                <div className="font-bold text-white text-xs truncate">{jamiaDisplayName}</div>
+                <div className="text-[11px] text-slate-400 font-medium truncate">{laundryDisplayName}</div>
               </div>
             </Link>
 
@@ -125,19 +127,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 setSidebarOpen(false);
                 setMobileOpen(false);
               }}
-              className="p-1 text-slate-400 hover:text-white rounded-md transition"
-              title="سائیڈ بار بند کریں"
+              className="p-1 text-slate-400 hover:text-white rounded-md transition shrink-0"
+              title={t.close}
             >
               <PanelLeftClose className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Compact Status Indicator */}
+          {/* Status Indicator */}
           <div className="mt-3 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between text-[11px]">
-            <span className="text-slate-400">آج کی نوعیت:</span>
+            <span className="text-slate-400">{t.today_nature}</span>
             <span className="flex items-center gap-1.5 font-semibold text-white">
               <span className={`w-1.5 h-1.5 rounded-full ${isTodaySarkariDay ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-              <span>{isTodaySarkariDay ? 'سرکاری کلیکشن' : 'پرائیویٹ'}</span>
+              <span>{isTodaySarkariDay ? t.sarkari : t.private}</span>
             </span>
           </div>
         </div>
@@ -197,7 +199,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   {user.full_name || user.username}
                 </div>
                 <div className="text-[10px] text-slate-400">
-                  {user.role === 'Administrator' ? 'ایڈمن' : 'آپریٹر'}
+                  {user.role === 'Administrator' ? t.admin_role : t.operator_role}
                 </div>
               </div>
             </div>
@@ -240,7 +242,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition"
               >
                 <PanelLeftOpen className="w-3.5 h-3.5" />
-                <span>مینو</span>
+                <span>{t.menu}</span>
               </button>
             )}
 
@@ -252,7 +254,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </button>
 
             <span className="font-semibold text-slate-700 text-xs hidden sm:inline">
-              {settings.jamia_name} — {settings.laundry_name}
+              {jamiaDisplayName} — {laundryDisplayName}
             </span>
           </div>
 
@@ -264,14 +266,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   : 'bg-amber-50 text-amber-800 border-amber-200'
               }`}
             >
-              {isTodaySarkariDay ? 'سرکاری دن (منگل/جمعہ)' : 'پرائیویٹ'}
+              {isTodaySarkariDay ? t.sarkari_collection_today : t.private_only_today}
             </span>
 
+            {/* Language Switcher Pill */}
             <button
               onClick={() => setLang(lang === 'ur' ? 'en' : 'ur')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-[11px] font-medium text-slate-600 transition"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition"
+              title="Change Language"
             >
-              <Languages className="w-3 h-3 text-slate-500" />
+              <Languages className="w-3.5 h-3.5 text-slate-500" />
               <span>{lang === 'ur' ? 'English' : 'اردو'}</span>
             </button>
           </div>

@@ -3,14 +3,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { SettingsMap } from '@/types';
-import { translations } from '@/lib/i18n';
+import { translations, Locale } from '@/lib/i18n';
 import { DEFAULT_SETTINGS } from '@/lib/seed-data';
 
 interface AppContextType {
   user: { id: string; username: string; full_name: string; role: string } | null;
   setUser: (u: any) => void;
-  lang: 'ur' | 'en';
-  setLang: (l: 'ur' | 'en') => void;
+  lang: Locale;
+  setLang: (l: Locale) => void;
   t: typeof translations.ur;
   settings: SettingsMap;
   updateLocalSettings: (s: SettingsMap) => void;
@@ -24,15 +24,31 @@ const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
-  const [lang, setLang] = useState<'ur' | 'en'>('ur');
+  const [lang, setLangState] = useState<Locale>('ur');
   const [settings, setSettings] = useState<SettingsMap>(DEFAULT_SETTINGS);
   const [counterName] = useState<string>('کاؤنٹر 1 (Main)');
   const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  // Load session & settings ONCE on initial mount (NOT on every route change)
+  const setLang = (newLang: Locale) => {
+    setLangState(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('jamia_laundry_lang', newLang);
+      document.documentElement.dir = newLang === 'ur' ? 'rtl' : 'ltr';
+      document.documentElement.lang = newLang;
+    }
+  };
+
   useEffect(() => {
+    // Initial language setup from localStorage if available
+    const savedLang = localStorage.getItem('jamia_laundry_lang') as Locale | null;
+    if (savedLang && (savedLang === 'en' || savedLang === 'ur')) {
+      setLangState(savedLang);
+      document.documentElement.dir = savedLang === 'ur' ? 'rtl' : 'ltr';
+      document.documentElement.lang = savedLang;
+    }
+
     fetch('/api/auth/me')
       .then(res => res.json())
       .then(data => {
@@ -51,34 +67,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .then(data => {
         if (data.settings) {
           setSettings(data.settings);
-          if (data.settings.language) {
-            setLang(data.settings.language);
-          }
         }
       })
       .catch(console.error);
-  }, []); // Run only once on mount
+  }, []);
 
-  // Clear navigation loading indicator on route change
   useEffect(() => {
     setIsNavigating(false);
   }, [pathname]);
 
-  // Global Function Key Shortcuts (COL-11: F1 Counter, F2 Deliveries, F3 Receipts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing inside an input/textarea and pressing other keys, but allow F1/F2/F3
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+
       if (e.key === 'F1') {
         e.preventDefault();
         setIsNavigating(true);
         router.push('/counter');
       } else if (e.key === 'F2') {
         e.preventDefault();
-        setIsNavigating(true);
         router.push('/deliveries');
       } else if (e.key === 'F3') {
         e.preventDefault();
-        setIsNavigating(true);
         router.push('/receipts');
       }
     };
@@ -114,8 +125,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isNavigating,
       }}
     >
-      <div dir={lang === 'ur' ? 'rtl' : 'ltr'} className={lang === 'ur' ? 'font-sans' : 'font-sans'}>
-        {/* Top Loading Progress Bar when navigating routes */}
+      <div dir={lang === 'ur' ? 'rtl' : 'ltr'}>
         {isNavigating && (
           <div className="fixed top-0 left-0 right-0 h-1 bg-emerald-500 z-50 animate-pulse shadow-sm" />
         )}

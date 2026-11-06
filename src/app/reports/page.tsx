@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import * as XLSX from 'xlsx';
 import {
   BarChart3,
@@ -20,7 +21,9 @@ import {
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 
 export default function ReportsPage() {
-  const { settings } = useApp();
+  const { settings, lang } = useApp();
+  const t = translations[lang];
+
   const [selectedReport, setSelectedReport] = useState('daily');
   const [fromDate, setFromDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [toDate, setToDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -75,38 +78,38 @@ export default function ReportsPage() {
 
     if (selectedReport === 'daily' || selectedReport === 'student_history' || selectedReport === 'bag_sheet') {
       exportRows = (reportData.receipts || []).map((r: any) => ({
-        'رسید نمبر': r.receipt_no,
-        'قسم': r.type,
-        'طالب علم': r.student_name,
-        'رجسٹریشن': r.student_reg_no,
-        'کلاس': r.class_name,
-        'اقامت': r.iqamat,
-        'کل کپڑے': r.total_pieces,
-        'بل (روپے)': r.total_amount,
-        'ادائیگی': r.payment_status,
-        'حالت': r.status,
-        'تاریخ': new Date(r.date_time).toLocaleDateString(),
-        'آپریٹر': r.operator_name,
+        [t.receipt_col]: r.receipt_no,
+        [t.type_col]: r.type,
+        [t.student_col]: r.student_name,
+        [t.registration_no]: r.student_reg_no,
+        [t.class_name]: r.class_name,
+        [t.iqamat]: r.iqamat,
+        [t.total_clothes_pieces]: r.total_pieces,
+        [t.bill_col]: r.total_amount,
+        [t.payment_situation]: r.payment_status,
+        [t.status_col]: r.status,
+        [t.timestamp_col]: new Date(r.date_time).toLocaleDateString(),
+        [t.operator_col]: r.operator_name,
       }));
     } else if (selectedReport === 'weekly' || selectedReport === 'date_range') {
       exportRows = (reportData.days || []).map((d: any) => ({
-        'تاریخ': d.date,
-        'سرکاری رسیدات': d.sarkariReceipts,
-        'سرکاری کپڑے': d.sarkariPieces,
-        'پرائیویٹ رسیدات': d.privateReceipts,
-        'پرائیویٹ کپڑے': d.privatePieces,
-        'کل آمدنی (روپے)': d.revenue,
-        'واجب الادا': d.unpaid,
+        [t.timestamp_col]: d.date,
+        [`${t.sarkari} ${t.receipt_col}`]: d.sarkariReceipts,
+        [`${t.sarkari} ${t.pieces_col}`]: d.sarkariPieces,
+        [`${t.private} ${t.receipt_col}`]: d.privateReceipts,
+        [`${t.private} ${t.pieces_col}`]: d.privatePieces,
+        [t.revenue_col]: d.revenue,
+        [t.unpaid_col]: d.unpaid,
       }));
     } else if (selectedReport === 'item_wise') {
       exportRows = (reportData.items || []).map((i: any) => ({
-        'شے کا نام': i.name_ur,
-        'English': i.name_en,
-        'ریٹ': i.rate,
-        'سرکاری تعداد': i.sarkariQty,
-        'پرائیویٹ تعداد': i.privateQty,
-        'کل تعداد': i.totalQty,
-        'کل رقم': i.totalAmt,
+        [t.item_ur]: i.name_ur,
+        [t.item_en]: i.name_en,
+        [t.rate]: i.rate,
+        [`${t.sarkari} ${t.pieces_col}`]: i.sarkariQty,
+        [`${t.private} ${t.pieces_col}`]: i.privateQty,
+        [t.total_clothes_pieces]: i.totalQty,
+        [t.amount_col]: i.totalAmt,
       }));
     }
 
@@ -117,14 +120,14 @@ export default function ReportsPage() {
   };
 
   const reportTabs = [
-    { id: 'daily', label: 'R1: روزانہ کلیکشن' },
-    { id: 'weekly', label: 'R2: ہفتہ وار خلاصہ' },
-    { id: 'student_history', label: 'R3: طالب علم ہسٹری' },
-    { id: 'item_wise', label: 'R4: اشیاء وار لوڈ' },
-    { id: 'sarkari_days', label: 'R5: منگل/جمعہ شیٹ' },
-    { id: 'unpaid', label: 'R7: بقایا جات' },
-    { id: 'pending_delivery', label: 'R8: غیر واپس شدہ' },
-    { id: 'audit_logs', label: 'آڈٹ لاگ' },
+    { id: 'daily', label: t.r1_daily },
+    { id: 'weekly', label: t.r2_weekly },
+    { id: 'student_history', label: t.r3_student },
+    { id: 'item_wise', label: t.r4_item },
+    { id: 'sarkari_days', label: t.r5_sarkari },
+    { id: 'unpaid', label: t.r7_unpaid },
+    { id: 'pending_delivery', label: t.r8_pending },
+    { id: 'audit_logs', label: t.audit_logs },
   ];
 
   return (
@@ -133,9 +136,9 @@ export default function ReportsPage() {
       {/* Header (Hidden during print) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200 print:hidden">
         <div>
-          <h1 className="text-base font-bold text-slate-900">رپورٹس و گوشوارے (Reports & Analytics)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.reports_title}</h1>
           <p className="text-[11px] text-slate-500">
-            روزانہ کلیکشن، مالیاتی خلاصہ، طلبہ ہسٹری اور لوڈ شیٹس
+            {t.reports_subtitle}
           </p>
         </div>
 
@@ -145,14 +148,14 @@ export default function ReportsPage() {
             className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 flex items-center gap-1.5 transition"
           >
             <Download className="w-3.5 h-3.5 text-emerald-600" />
-            <span>ایکسل ڈاؤن لوڈ</span>
+            <span>{t.export_excel}</span>
           </button>
           <button
             onClick={() => window.print()}
             className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>پرنٹ کریں</span>
+            <span>{t.print}</span>
           </button>
         </div>
       </div>
@@ -179,7 +182,7 @@ export default function ReportsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
             <Filter className="w-3 h-3 text-slate-400" />
-            <span>مدت:</span>
+            <span>{t.duration}</span>
           </span>
 
           <input
@@ -188,7 +191,7 @@ export default function ReportsPage() {
             onChange={e => setFromDate(e.target.value)}
             className="p-1 px-2 border rounded-md bg-slate-50 text-xs font-mono"
           />
-          <span className="text-slate-400">تا</span>
+          <span className="text-slate-400">{t.date_to}</span>
           <input
             type="date"
             value={toDate}
@@ -201,29 +204,29 @@ export default function ReportsPage() {
               onClick={() => setQuickRange('today')}
               className="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium"
             >
-              آج
+              {t.today}
             </button>
             <button
               onClick={() => setQuickRange('week')}
               className="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium"
             >
-              اس ہفتے
+              {t.this_week}
             </button>
             <button
               onClick={() => setQuickRange('month')}
               className="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium"
             >
-              اس مہینے
+              {t.this_month}
             </button>
           </div>
         </div>
 
         {selectedReport === 'student_history' && (
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-600 font-medium">رجسٹریشن:</span>
+            <span className="text-slate-600 font-medium">{t.registration_no}:</span>
             <input
               type="text"
-              placeholder="مثلاً: 1234"
+              placeholder="1234"
               value={studentId}
               onChange={e => setStudentId(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && fetchReport()}
@@ -233,7 +236,7 @@ export default function ReportsPage() {
               onClick={fetchReport}
               className="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-medium"
             >
-              تلاش
+              {t.search_btn}
             </button>
           </div>
         )}
@@ -245,17 +248,17 @@ export default function ReportsPage() {
         {/* Institutional Report Header */}
         <div className="text-center pb-3 border-b border-slate-200">
           <h2 className="text-base font-bold text-slate-900 leading-tight">
-            {settings.jamia_name} — {settings.laundry_name}
+            {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name} — {settings.laundry_name}
           </h2>
           <div className="text-[11px] text-slate-500 mt-0.5">
-            رپورٹ: <strong className="text-slate-800 uppercase">{selectedReport}</strong> | تاریخ: {fromDate} {fromDate !== toDate ? `تا ${toDate}` : ''}
+            {t.report_label} <strong className="text-slate-800 uppercase">{selectedReport}</strong> | {fromDate} {fromDate !== toDate ? `${t.date_to} ${toDate}` : ''}
           </div>
         </div>
 
         {/* Loading state */}
         {loading && (
           <div className="py-8 text-center text-slate-400 text-xs">
-            رپورٹ ڈیٹا لوڈ ہو رہا ہے...
+            {t.loading}
           </div>
         )}
 
@@ -264,46 +267,46 @@ export default function ReportsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                <div className="text-[11px] text-slate-500">کل رسیدات</div>
+                <div className="text-[11px] text-slate-500">{t.total_receipts_label}</div>
                 <div className="text-xl font-bold font-mono text-slate-900">{reportData.summary.totalReceipts}</div>
                 <div className="text-[10px] text-slate-400 mt-1">
-                  سرکاری: {reportData.summary.sarkariCount} | پرائیویٹ: {reportData.summary.privateCount}
+                  {t.sarkari}: {reportData.summary.sarkariCount} | {t.private}: {reportData.summary.privateCount}
                 </div>
               </div>
 
               <div className="bg-emerald-50/60 p-3 rounded-lg border border-emerald-200">
-                <div className="text-[11px] text-emerald-800 font-medium">کل کپڑے (Pieces)</div>
+                <div className="text-[11px] text-emerald-800 font-medium">{t.total_clothes_pieces}</div>
                 <div className="text-xl font-bold font-mono text-emerald-900">{reportData.summary.totalPieces}</div>
                 <div className="text-[10px] text-emerald-700 mt-1">
-                  سرکاری: {reportData.summary.sarkariPieces} | پرائیویٹ: {reportData.summary.privatePieces}
+                  {t.sarkari}: {reportData.summary.sarkariPieces} | {t.private}: {reportData.summary.privatePieces}
                 </div>
               </div>
 
               <div className="bg-amber-50/60 p-3 rounded-lg border border-amber-200">
-                <div className="text-[11px] text-amber-800 font-medium">نقد وصولی</div>
+                <div className="text-[11px] text-amber-800 font-medium">{t.cash_collected}</div>
                 <div className="text-xl font-bold font-mono text-amber-900">Rs {reportData.summary.privateCashCollected}</div>
-                <div className="text-[10px] text-amber-700 mt-1">کاؤنٹر کیش</div>
+                <div className="text-[10px] text-amber-700 mt-1">{t.counter_cash_collected}</div>
               </div>
 
               <div className="bg-rose-50/60 p-3 rounded-lg border border-rose-200">
-                <div className="text-[11px] text-rose-800 font-medium">غیر ادا شدہ (Unpaid)</div>
+                <div className="text-[11px] text-rose-800 font-medium">{t.unpaid_balance}</div>
                 <div className="text-xl font-bold font-mono text-rose-900">Rs {reportData.summary.privateUnpaidTotal}</div>
-                <div className="text-[10px] text-rose-700 mt-1">واپسی پر وصولی</div>
+                <div className="text-[10px] text-rose-700 mt-1">{t.due_on_delivery}</div>
               </div>
             </div>
 
             {/* Item Breakdown Summary Table */}
             <div>
-              <div className="text-xs font-semibold text-slate-800 mb-2">اشیاء وار تفصیل:</div>
+              <div className="text-xs font-semibold text-slate-800 mb-2">{t.item_breakdown_detail}</div>
               <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full text-xs text-right">
+                <table className="w-full text-xs text-start">
                   <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                     <tr>
-                      <th className="p-2">شے</th>
-                      <th className="p-2">English</th>
-                      <th className="p-2 text-center">سرکاری</th>
-                      <th className="p-2 text-center">پرائیویٹ</th>
-                      <th className="p-2 text-center font-bold">کل تعداد</th>
+                      <th className="p-2 text-start">{t.item_ur}</th>
+                      <th className="p-2 text-start">{t.item_en}</th>
+                      <th className="p-2 text-center">{t.sarkari}</th>
+                      <th className="p-2 text-center">{t.private}</th>
+                      <th className="p-2 text-center font-bold">{t.total_pieces}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -316,7 +319,7 @@ export default function ReportsPage() {
                           <td className="p-2 text-slate-500">{item.name_en}</td>
                           <td className="p-2 text-center font-mono text-blue-700">{sQty}</td>
                           <td className="p-2 text-center font-mono text-amber-700">{pQty}</td>
-                          <td className="p-2 text-center font-mono font-bold text-slate-900">{sQty + pQty} عدد</td>
+                          <td className="p-2 text-center font-mono font-bold text-slate-900">{sQty + pQty} {t.pieces}</td>
                         </tr>
                       );
                     })}
@@ -330,16 +333,16 @@ export default function ReportsPage() {
         {/* R2: Weekly / Date-range */}
         {!loading && (selectedReport === 'weekly' || selectedReport === 'date_range') && reportData?.days && (
           <div className="border border-slate-200 rounded-lg overflow-hidden">
-            <table className="w-full text-xs text-right">
+            <table className="w-full text-xs text-start">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                 <tr>
-                  <th className="p-2.5">تاریخ</th>
-                  <th className="p-2.5 text-center">سرکاری رسیدات</th>
-                  <th className="p-2.5 text-center">سرکاری کپڑے</th>
-                  <th className="p-2.5 text-center">پرائیویٹ رسیدات</th>
-                  <th className="p-2.5 text-center">پرائیویٹ کپڑے</th>
-                  <th className="p-2.5 text-left">آمدنی (روپے)</th>
-                  <th className="p-2.5 text-left">غیر ادا شدہ</th>
+                  <th className="p-2.5 text-start">{t.timestamp_col}</th>
+                  <th className="p-2.5 text-center">{t.sarkari} {t.receipt_col}</th>
+                  <th className="p-2.5 text-center">{t.sarkari} {t.pieces_col}</th>
+                  <th className="p-2.5 text-center">{t.private} {t.receipt_col}</th>
+                  <th className="p-2.5 text-center">{t.private} {t.pieces_col}</th>
+                  <th className="p-2.5 text-start">{t.revenue_col}</th>
+                  <th className="p-2.5 text-start">{t.unpaid_col}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -350,20 +353,20 @@ export default function ReportsPage() {
                     <td className="p-2.5 text-center font-mono">{d.sarkariPieces}</td>
                     <td className="p-2.5 text-center font-mono text-amber-700">{d.privateReceipts}</td>
                     <td className="p-2.5 text-center font-mono">{d.privatePieces}</td>
-                    <td className="p-2.5 text-left font-mono font-bold text-emerald-700">Rs {d.revenue}</td>
-                    <td className="p-2.5 text-left font-mono text-rose-600">Rs {d.unpaid}</td>
+                    <td className="p-2.5 text-start font-mono font-bold text-emerald-700">Rs {d.revenue}</td>
+                    <td className="p-2.5 text-start font-mono text-rose-600">Rs {d.unpaid}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot className="bg-slate-50 font-bold border-t">
                 <tr>
-                  <td className="p-2.5">کل میزان</td>
+                  <td className="p-2.5">{t.total_sum}</td>
                   <td className="p-2.5 text-center">-</td>
                   <td className="p-2.5 text-center font-mono">{reportData.totals?.sarkariPieces}</td>
                   <td className="p-2.5 text-center">-</td>
                   <td className="p-2.5 text-center font-mono">{reportData.totals?.privatePieces}</td>
-                  <td className="p-2.5 text-left font-mono text-emerald-800">Rs {reportData.totals?.totalRevenue}</td>
-                  <td className="p-2.5 text-left font-mono text-rose-700">Rs {reportData.totals?.totalUnpaid}</td>
+                  <td className="p-2.5 text-start font-mono text-emerald-800">Rs {reportData.totals?.totalRevenue}</td>
+                  <td className="p-2.5 text-start font-mono text-rose-700">Rs {reportData.totals?.totalUnpaid}</td>
                 </tr>
               </tfoot>
             </table>
@@ -377,38 +380,44 @@ export default function ReportsPage() {
               <div className="bg-slate-50 p-3 rounded-lg border flex justify-between items-center text-xs">
                 <div>
                   <div className="font-bold text-slate-900">{reportData.student.name}</div>
-                  <div className="text-slate-500">ولدیت: {reportData.student.father_name} • کلاس: {reportData.student.class_name} ({reportData.student.iqamat})</div>
+                  <div className="text-slate-500">
+                    {t.father_name}: {reportData.student.father_name} • {t.class_name}: {reportData.student.class_name} ({reportData.student.iqamat})
+                  </div>
                 </div>
-                <div className="text-left font-mono">
+                <div className="text-end font-mono">
                   <div className="font-bold">Reg: {reportData.student.reg_no}</div>
-                  <div className="text-emerald-700 font-semibold">{reportData.totalReceipts} رسیدات • {reportData.totalPieces} کپڑے</div>
+                  <div className="text-emerald-700 font-semibold">
+                    {reportData.totalReceipts} {t.receipt_col} • {reportData.totalPieces} {t.pieces}
+                  </div>
                 </div>
               </div>
             )}
 
             <div className="border border-slate-200 rounded-lg overflow-hidden">
-              <table className="w-full text-xs text-right">
+              <table className="w-full text-xs text-start">
                 <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                   <tr>
-                    <th className="p-2.5">رسید #</th>
-                    <th className="p-2.5">قسم</th>
-                    <th className="p-2.5">تاریخ</th>
-                    <th className="p-2.5 text-center">کپڑے</th>
-                    <th className="p-2.5 text-left">بل</th>
-                    <th className="p-2.5 text-center">ادائیگی</th>
-                    <th className="p-2.5 text-center">حالت</th>
+                    <th className="p-2.5 text-start">{t.receipt_col}</th>
+                    <th className="p-2.5 text-start">{t.type_col}</th>
+                    <th className="p-2.5 text-start">{t.timestamp_col}</th>
+                    <th className="p-2.5 text-center">{t.pieces_col}</th>
+                    <th className="p-2.5 text-start">{t.bill_col}</th>
+                    <th className="p-2.5 text-center">{t.status_col}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData?.receipts?.map((r: any) => (
                     <tr key={r.id}>
                       <td className="p-2.5 font-mono font-bold text-slate-900">{r.receipt_no}</td>
-                      <td className="p-2.5">{r.type}</td>
+                      <td className="p-2.5">{r.type === 'Sarkari' ? t.sarkari : t.private}</td>
                       <td className="p-2.5 text-slate-500 font-mono">{new Date(r.date_time).toLocaleDateString()}</td>
                       <td className="p-2.5 text-center font-mono font-bold">{r.total_pieces}</td>
-                      <td className="p-2.5 text-left font-mono font-bold">{r.type === 'Private' ? `Rs ${r.total_amount}` : 'مفت'}</td>
-                      <td className="p-2.5 text-center">{r.payment_status}</td>
-                      <td className="p-2.5 text-center font-medium">{r.status}</td>
+                      <td className="p-2.5 text-start font-mono font-bold">
+                        {r.type === 'Private' ? `Rs ${r.total_amount}` : t.free}
+                      </td>
+                      <td className="p-2.5 text-center font-medium">
+                        {r.status === 'Delivered' ? t.delivered : r.status === 'Ready' ? t.ready : r.status === 'In Process' ? t.in_process : t.received}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -420,16 +429,16 @@ export default function ReportsPage() {
         {/* R4: Item-wise */}
         {!loading && selectedReport === 'item_wise' && reportData?.items && (
           <div className="border border-slate-200 rounded-lg overflow-hidden">
-            <table className="w-full text-xs text-right">
+            <table className="w-full text-xs text-start">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                 <tr>
-                  <th className="p-2.5">شے کا نام</th>
-                  <th className="p-2.5">English</th>
-                  <th className="p-2.5 text-left">ریٹ</th>
-                  <th className="p-2.5 text-center">سرکاری</th>
-                  <th className="p-2.5 text-center">پرائیویٹ</th>
-                  <th className="p-2.5 text-center font-bold">کل تعداد</th>
-                  <th className="p-2.5 text-left font-bold">کل رقم</th>
+                  <th className="p-2.5 text-start">{t.item_ur}</th>
+                  <th className="p-2.5 text-start">{t.item_en}</th>
+                  <th className="p-2.5 text-start">{t.rate}</th>
+                  <th className="p-2.5 text-center">{t.sarkari}</th>
+                  <th className="p-2.5 text-center">{t.private}</th>
+                  <th className="p-2.5 text-center font-bold">{t.total_clothes_pieces}</th>
+                  <th className="p-2.5 text-start font-bold">{t.amount_col}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -437,19 +446,19 @@ export default function ReportsPage() {
                   <tr key={i.item_id}>
                     <td className="p-2.5 font-medium text-slate-900">{i.name_ur}</td>
                     <td className="p-2.5 text-slate-500">{i.name_en}</td>
-                    <td className="p-2.5 text-left font-mono">Rs {i.rate}</td>
+                    <td className="p-2.5 text-start font-mono">Rs {i.rate}</td>
                     <td className="p-2.5 text-center font-mono text-blue-700">{i.sarkariQty}</td>
                     <td className="p-2.5 text-center font-mono text-amber-700">{i.privateQty}</td>
                     <td className="p-2.5 text-center font-mono font-bold text-slate-900">{i.totalQty}</td>
-                    <td className="p-2.5 text-left font-mono font-bold text-emerald-700">Rs {i.totalAmt}</td>
+                    <td className="p-2.5 text-start font-mono font-bold text-emerald-700">Rs {i.totalAmt}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot className="bg-slate-50 font-bold border-t">
                 <tr>
-                  <td colSpan={5} className="p-2.5">میزان</td>
-                  <td className="p-2.5 text-center font-mono">{reportData.grandTotalPieces} عدد</td>
-                  <td className="p-2.5 text-left font-mono text-emerald-800">Rs {reportData.grandTotalRevenue}</td>
+                  <td colSpan={5} className="p-2.5">{t.total_sum}</td>
+                  <td className="p-2.5 text-center font-mono">{reportData.grandTotalPieces} {t.pieces}</td>
+                  <td className="p-2.5 text-start font-mono text-emerald-800">Rs {reportData.grandTotalRevenue}</td>
                 </tr>
               </tfoot>
             </table>
@@ -460,20 +469,20 @@ export default function ReportsPage() {
         {!loading && selectedReport === 'unpaid' && reportData?.receipts && (
           <div className="space-y-3">
             <div className="bg-rose-50 p-3 rounded-lg border border-rose-200 flex justify-between items-center text-xs text-rose-900 font-medium">
-              <span>کل غیر ادا شدہ رسیدات: <strong className="font-mono">{reportData.totalUnpaidCount}</strong></span>
-              <span>کل واجب الادا رقم: <strong className="font-mono text-sm">Rs {reportData.totalUnpaidAmount}</strong></span>
+              <span>{t.all_unpaid_receipts} <strong className="font-mono">{reportData.totalUnpaidCount}</strong></span>
+              <span>{t.all_unpaid_amount} <strong className="font-mono text-sm">Rs {reportData.totalUnpaidAmount}</strong></span>
             </div>
 
             <div className="border border-slate-200 rounded-lg overflow-hidden">
-              <table className="w-full text-xs text-right">
+              <table className="w-full text-xs text-start">
                 <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                   <tr>
-                    <th className="p-2.5">رسید #</th>
-                    <th className="p-2.5">طالب علم</th>
-                    <th className="p-2.5">رجسٹریشن</th>
-                    <th className="p-2.5 text-center">کپڑے</th>
-                    <th className="p-2.5 text-left">واجب الادا</th>
-                    <th className="p-2.5">تاریخ</th>
+                    <th className="p-2.5 text-start">{t.receipt_col}</th>
+                    <th className="p-2.5 text-start">{t.student_col}</th>
+                    <th className="p-2.5 text-start">{t.registration_no}</th>
+                    <th className="p-2.5 text-center">{t.pieces_col}</th>
+                    <th className="p-2.5 text-start">{t.unpaid_col}</th>
+                    <th className="p-2.5 text-start">{t.timestamp_col}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -483,7 +492,7 @@ export default function ReportsPage() {
                       <td className="p-2.5 font-medium">{r.student_name}</td>
                       <td className="p-2.5 font-mono text-slate-600">{r.student_reg_no}</td>
                       <td className="p-2.5 text-center font-mono font-semibold">{r.total_pieces}</td>
-                      <td className="p-2.5 text-left font-mono font-bold text-rose-600">Rs {r.total_amount}</td>
+                      <td className="p-2.5 text-start font-mono font-bold text-rose-600">Rs {r.total_amount}</td>
                       <td className="p-2.5 text-slate-500 font-mono text-[11px]">{new Date(r.date_time).toLocaleDateString()}</td>
                     </tr>
                   ))}
@@ -496,14 +505,14 @@ export default function ReportsPage() {
         {/* Audit Logs */}
         {!loading && selectedReport === 'audit_logs' && reportData?.logs && (
           <div className="border border-slate-200 rounded-lg overflow-hidden">
-            <table className="w-full text-xs text-right">
+            <table className="w-full text-xs text-start">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b text-[11px]">
                 <tr>
-                  <th className="p-2.5">تاریخ و وقت</th>
-                  <th className="p-2.5">صارف</th>
-                  <th className="p-2.5 text-center">ایکشن</th>
-                  <th className="p-2.5">ریکارڈ</th>
-                  <th className="p-2.5">وجہ / تفصیل</th>
+                  <th className="p-2.5 text-start">{t.timestamp_col}</th>
+                  <th className="p-2.5 text-start">{t.operator_col}</th>
+                  <th className="p-2.5 text-center">{t.action_col}</th>
+                  <th className="p-2.5 text-start">{t.record_col}</th>
+                  <th className="p-2.5 text-start">{t.reason_col}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-mono text-[11px]">

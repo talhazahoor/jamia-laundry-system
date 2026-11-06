@@ -8,17 +8,11 @@ import {
   Search,
   CheckCircle2,
   AlertTriangle,
-  QrCode,
-  DollarSign,
-  User,
-  Clock,
   ShieldAlert,
-  Printer,
-  Shirt,
 } from 'lucide-react';
 
 export default function DeliveriesPage() {
-  const { user, t } = useApp();
+  const { lang, t } = useApp();
   const [receiptInput, setReceiptInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +43,7 @@ export default function DeliveriesPage() {
       const res = await fetch(`/api/receipts/${encodeURIComponent(q)}`);
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'رسید کا ریکارڈ نہیں ملا');
+        throw new Error(data.error || (lang === 'en' ? 'Receipt not found' : 'رسید کا ریکارڈ نہیں ملا'));
       }
 
       setReceipt(data.receipt);
@@ -89,7 +83,7 @@ export default function DeliveriesPage() {
         throw new Error(data.error || 'Failed to mark delivered');
       }
 
-      setSuccess(`رسید #${receipt.receipt_no} کے کپڑے طالب علم کو حوالے کر دیے گئے`);
+      setSuccess(t.handed_over_success);
       setReceipt(data.receipt);
       setUnpaidAlert(false);
       setReceiptInput('');
@@ -102,7 +96,7 @@ export default function DeliveriesPage() {
   };
 
   const handleBulkMarkReady = async () => {
-    if (!confirm('کیا آپ آج کی تمام سرکاری رسیدات کو "تیار" (Ready) نشان زد کرنا چاہتے ہیں؟')) {
+    if (!confirm(lang === 'en' ? 'Mark all today\'s Sarkari receipts as Ready?' : 'کیا آپ آج کی تمام سرکاری رسیدات کو "تیار" نشان زد کرنا چاہتے ہیں؟')) {
       return;
     }
 
@@ -116,7 +110,7 @@ export default function DeliveriesPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Bulk update failed');
 
-      setSuccess(data.message || `کامیابی سے اپ ڈیٹ کر دیا گیا! (${data.updatedCount} رسیدات)`);
+      setSuccess(data.message || (lang === 'en' ? `Updated ${data.updatedCount} receipts!` : `کامیابی سے اپ ڈیٹ کر دیا گیا! (${data.updatedCount} رسیدات)`));
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -130,9 +124,9 @@ export default function DeliveriesPage() {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">کپڑوں کی واپسی و ترسیل (Deliveries & Returns)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.deliveries_title}</h1>
           <p className="text-[11px] text-slate-500">
-            بارکوڈ اسکین کریں یا رسید نمبر درج کر کے کپڑے حوالے کریں
+            {t.deliveries_subtitle}
           </p>
         </div>
 
@@ -141,7 +135,7 @@ export default function DeliveriesPage() {
           disabled={bulkProcessing}
           className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition"
         >
-          {bulkProcessing ? 'اپ ڈیٹ ہو رہا ہے...' : 'تمام سرکاری کپڑے تیار نشان زد کریں'}
+          {bulkProcessing ? '...' : t.mark_all_ready}
         </button>
       </div>
 
@@ -166,9 +160,9 @@ export default function DeliveriesPage() {
       {/* Scanner Input Card */}
       <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
         <div className="flex justify-between items-center text-xs font-semibold text-slate-700">
-          <span>رسید نمبر یا بارکوڈ اسکین فرمائیں:</span>
+          <span>{lang === 'en' ? 'Scan Barcode or Enter Receipt Number:' : 'رسید نمبر یا بارکوڈ اسکین فرمائیں:'}</span>
           <span className="text-[11px] text-slate-400 font-normal">
-            نمونہ: <button onClick={() => lookupReceipt('S-000101')} className="underline font-mono text-emerald-700">S-000101</button> یا <button onClick={() => lookupReceipt('P-000201')} className="underline font-mono text-emerald-700">P-000201</button>
+            {lang === 'en' ? 'Sample:' : 'نمونہ:'} <button onClick={() => lookupReceipt('S-000101')} className="underline font-mono text-emerald-700">S-000101</button> or <button onClick={() => lookupReceipt('P-000201')} className="underline font-mono text-emerald-700">P-000201</button>
           </span>
         </div>
 
@@ -185,7 +179,7 @@ export default function DeliveriesPage() {
                   lookupReceipt();
                 }
               }}
-              placeholder="رسید نمبر درج کریں..."
+              placeholder={t.scan_placeholder}
               className="w-full px-3 py-2 text-xs font-mono font-bold text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
               autoFocus
             />
@@ -195,7 +189,7 @@ export default function DeliveriesPage() {
             disabled={loading}
             className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium px-4 py-2 rounded-lg text-xs transition"
           >
-            {loading ? 'تلاش...' : 'تلاش کریں'}
+            {loading ? '...' : t.search_btn}
           </button>
         </div>
       </div>
@@ -211,7 +205,7 @@ export default function DeliveriesPage() {
               <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
                 receipt.type === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
               }`}>
-                {receipt.type === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
+                {receipt.type === 'Sarkari' ? t.sarkari : t.private}
               </span>
             </div>
 
@@ -221,7 +215,7 @@ export default function DeliveriesPage() {
                   ? 'bg-emerald-100 text-emerald-800'
                   : 'bg-slate-200 text-slate-800'
               }`}>
-                {receipt.status === 'Delivered' ? 'واپس شدہ (Delivered)' : receipt.status}
+                {receipt.status === 'Delivered' ? t.delivered : receipt.status}
               </span>
 
               {receipt.type === 'Private' && (
@@ -230,7 +224,7 @@ export default function DeliveriesPage() {
                     ? 'bg-emerald-100 text-emerald-800'
                     : 'bg-rose-100 text-rose-800'
                 }`}>
-                  {receipt.payment_status === 'Paid' ? 'ادا شدہ' : 'بقایا (Unpaid)'}
+                  {receipt.payment_status === 'Paid' ? t.paid : t.unpaid}
                 </span>
               )}
             </div>
@@ -241,19 +235,19 @@ export default function DeliveriesPage() {
             {/* Student details */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
               <div>
-                <span className="text-[10px] text-slate-400 block">طالب علم:</span>
+                <span className="text-[10px] text-slate-400 block">{t.student_col}:</span>
                 <span className="font-bold text-slate-900">{receipt.student_name}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block">رجسٹریشن:</span>
+                <span className="text-[10px] text-slate-400 block">{t.registration_no}:</span>
                 <span className="font-mono font-semibold">{receipt.student_reg_no}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block">کلاس و ہاسٹل:</span>
+                <span className="text-[10px] text-slate-400 block">{t.class_name}:</span>
                 <span>{receipt.class_name} ({receipt.iqamat})</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block">جمع کرانے کی تاریخ:</span>
+                <span className="text-[10px] text-slate-400 block">{lang === 'en' ? 'Collection Date:' : 'جمع تاریخ:'}</span>
                 <span className="font-mono">{new Date(receipt.date_time).toLocaleDateString()}</span>
               </div>
             </div>
@@ -264,9 +258,9 @@ export default function DeliveriesPage() {
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
                   <div>
-                    <span className="font-bold">توجہ فرمائیں: بل ابھی ادا نہیں ہوا!</span>
+                    <span className="font-bold">{t.unpaid_warning}</span>
                     <span className="block text-[11px] text-rose-700">
-                      واجب الادا رقم: <strong className="font-mono text-xs">Rs {receipt.total_amount}</strong>
+                      {lang === 'en' ? 'Total Due:' : 'واجب الادا رقم:'} <strong className="font-mono text-xs">Rs {receipt.total_amount}</strong>
                     </span>
                   </div>
                 </div>
@@ -276,7 +270,7 @@ export default function DeliveriesPage() {
                   disabled={delivering}
                   className="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow-sm transition"
                 >
-                  رقم وصول کر کے حوالے کریں
+                  {t.collect_and_deliver}
                 </button>
               </div>
             )}
@@ -284,16 +278,16 @@ export default function DeliveriesPage() {
             {/* Items Table */}
             <div>
               <div className="font-semibold text-slate-700 mb-1 text-xs">
-                کپڑوں کی تفصیل ({receipt.total_pieces} عدد):
+                {lang === 'en' ? `Clothes Items (${receipt.total_pieces} pcs):` : `کپڑوں کی تفصیل (${receipt.total_pieces} عدد):`}
               </div>
               <div className="border border-slate-200 rounded-lg overflow-hidden">
                 <table className="w-full text-right text-xs">
                   <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 text-[11px]">
                     <tr>
-                      <th className="p-2">شے</th>
-                      <th className="p-2 text-center">تعداد</th>
-                      <th className="p-2 text-left">ریٹ</th>
-                      <th className="p-2 text-left">میزان</th>
+                      <th className="p-2">{lang === 'en' ? 'Item' : 'شے'}</th>
+                      <th className="p-2 text-center">{t.pieces_col}</th>
+                      <th className="p-2 text-left">{t.rate}</th>
+                      <th className="p-2 text-left">{t.amount_col}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -302,7 +296,7 @@ export default function DeliveriesPage() {
                         <td className="p-2 font-medium">{item.item_name}</td>
                         <td className="p-2 text-center font-mono font-semibold">{item.quantity}</td>
                         <td className="p-2 text-left font-mono">
-                          {receipt.type === 'Private' ? `Rs ${item.rate}` : 'مفت'}
+                          {receipt.type === 'Private' ? `Rs ${item.rate}` : t.free}
                         </td>
                         <td className="p-2 text-left font-mono font-bold">
                           {receipt.type === 'Private' ? `Rs ${item.quantity * item.rate}` : '0'}
@@ -322,11 +316,11 @@ export default function DeliveriesPage() {
                   disabled={delivering}
                   className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition text-xs shadow-sm"
                 >
-                  {delivering ? 'عمل جاری...' : 'کپڑے حوالے کر دیے (Mark Delivered)'}
+                  {delivering ? '...' : t.mark_delivered_btn}
                 </button>
               ) : (
                 <span className="text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 text-xs">
-                  ✓ یہ کپڑے پہلے ہی طالب علم کے حوالے کیے جا چکے ہیں
+                  {t.already_delivered}
                 </span>
               )}
             </div>

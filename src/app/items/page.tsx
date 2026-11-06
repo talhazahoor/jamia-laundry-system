@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import { LaundryItem } from '@/types';
 import {
   Tags,
@@ -14,7 +15,9 @@ import {
 } from 'lucide-react';
 
 export default function ItemsPage() {
-  const { user } = useApp();
+  const { user, lang } = useApp();
+  const t = translations[lang];
+
   const [items, setItems] = useState<LaundryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -54,7 +57,7 @@ export default function ItemsPage() {
       setEditingItem({});
       fetchItems();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     } finally {
       setSaving(false);
     }
@@ -66,9 +69,9 @@ export default function ItemsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">اشیاء اور ریٹ لسٹ (Items & Pricing)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.items_title}</h1>
           <p className="text-[11px] text-slate-500">
-            کپڑوں کی اقسام، فی عدد پرائیویٹ ریٹ اور سرکاری اہلیت کی تفصیل
+            {t.items_subtitle}
           </p>
         </div>
 
@@ -89,7 +92,7 @@ export default function ItemsPage() {
             className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>نئی شے شامل کریں</span>
+            <span>{t.new_item}</span>
           </button>
         )}
       </div>
@@ -97,27 +100,27 @@ export default function ItemsPage() {
       {/* Items Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-right">
+          <table className="w-full text-xs text-start">
             <thead className="bg-slate-50 text-[11px] text-slate-500 font-semibold border-b border-slate-200">
               <tr>
-                <th className="p-2.5 text-center">ترتیب</th>
-                <th className="p-2.5">اردو نام</th>
-                <th className="p-2.5">English Name</th>
-                <th className="p-2.5 text-left">ریٹ (روپے)</th>
-                <th className="p-2.5 text-center">سرکاری کوٹہ</th>
-                <th className="p-2.5 text-center">پرائیویٹ</th>
-                <th className="p-2.5 text-center">حالت</th>
-                {user?.role === 'Administrator' && <th className="p-2.5 text-center">ایکشن</th>}
+                <th className="p-2.5 text-center">{t.order}</th>
+                <th className="p-2.5 text-start">{t.item_ur}</th>
+                <th className="p-2.5 text-start">{t.item_en}</th>
+                <th className="p-2.5 text-start">{t.rate_rs}</th>
+                <th className="p-2.5 text-center">{t.sarkari_quota}</th>
+                <th className="p-2.5 text-center">{t.private_quota}</th>
+                <th className="p-2.5 text-center">{t.status}</th>
+                {user?.role === 'Administrator' && <th className="p-2.5 text-center">{t.actions}</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={8} className="p-8 text-center text-slate-400">{t.loading}</td>
                 </tr>
               ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">کوئی شے درج نہیں ہے</td>
+                  <td colSpan={8} className="p-8 text-center text-slate-400">{t.no_items_found}</td>
                 </tr>
               ) : (
                 items.map(item => (
@@ -125,26 +128,26 @@ export default function ItemsPage() {
                     <td className="p-2.5 text-center font-mono text-slate-400">#{item.display_order}</td>
                     <td className="p-2.5 font-bold text-slate-900">{item.name_ur}</td>
                     <td className="p-2.5 text-slate-500">{item.name_en}</td>
-                    <td className="p-2.5 text-left font-mono font-bold text-slate-900">Rs {item.private_rate}</td>
+                    <td className="p-2.5 text-start font-mono font-bold text-slate-900">Rs {item.private_rate}</td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         item.allowed_sarkari ? 'bg-blue-50 text-blue-700' : 'text-slate-400'
                       }`}>
-                        {item.allowed_sarkari ? '✓ شامل' : 'نہیں'}
+                        {item.allowed_sarkari ? t.included : t.not_included}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         item.allowed_private ? 'bg-emerald-50 text-emerald-700' : 'text-slate-400'
                       }`}>
-                        {item.allowed_private ? '✓ شامل' : 'نہیں'}
+                        {item.allowed_private ? t.included : t.not_included}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         item.active ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                       }`}>
-                        {item.active ? 'فعال' : 'غیر فعال'}
+                        {item.active ? t.active : t.inactive}
                       </span>
                     </td>
                     {user?.role === 'Administrator' && (
@@ -155,7 +158,7 @@ export default function ItemsPage() {
                             setShowModal(true);
                           }}
                           className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-                          title="ترمیم"
+                          title={t.edit}
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
@@ -175,7 +178,7 @@ export default function ItemsPage() {
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b">
               <span className="font-bold text-slate-900 text-sm">
-                {editingItem.id ? 'شے کی تفصیل میں ترمیم' : 'نئی شے شامل کریں'}
+                {editingItem.id ? t.edit_item_title : t.add_item_title}
               </span>
               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-4 h-4" />
@@ -185,7 +188,7 @@ export default function ItemsPage() {
             <form onSubmit={handleSaveItem} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">اردو نام *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.item_ur} *</label>
                   <input
                     type="text"
                     required
@@ -196,7 +199,7 @@ export default function ItemsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">English Name *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.item_en} *</label>
                   <input
                     type="text"
                     required
@@ -210,7 +213,7 @@ export default function ItemsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">ریٹ (روپے) *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.rate_rs} *</label>
                   <input
                     type="number"
                     min="0"
@@ -221,7 +224,7 @@ export default function ItemsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">ترتیب #</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.order} #</label>
                   <input
                     type="number"
                     min="1"
@@ -240,7 +243,7 @@ export default function ItemsPage() {
                     onChange={e => setEditingItem({ ...editingItem, allowed_sarkari: e.target.checked })}
                     className="w-3.5 h-3.5 text-emerald-600 rounded"
                   />
-                  <span>سرکاری کوٹہ میں شامل ہے</span>
+                  <span>{t.included_in_sarkari_quota}</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -250,7 +253,7 @@ export default function ItemsPage() {
                     onChange={e => setEditingItem({ ...editingItem, allowed_private: e.target.checked })}
                     className="w-3.5 h-3.5 text-emerald-600 rounded"
                   />
-                  <span>پرائیویٹ بلنگ میں شامل ہے</span>
+                  <span>{t.included_in_private_billing}</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -260,7 +263,7 @@ export default function ItemsPage() {
                     onChange={e => setEditingItem({ ...editingItem, active: e.target.checked })}
                     className="w-3.5 h-3.5 text-emerald-600 rounded"
                   />
-                  <span>فعال ہے (Active)</span>
+                  <span>{t.item_active_check}</span>
                 </label>
               </div>
 
@@ -270,14 +273,14 @@ export default function ItemsPage() {
                   onClick={() => setShowModal(false)}
                   className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
                 >
-                  کینسل
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 shadow-sm"
                 >
-                  {saving ? 'محفوظ ہو رہا ہے...' : 'محفوظ کریں'}
+                  {saving ? t.saving : t.save}
                 </button>
               </div>
             </form>

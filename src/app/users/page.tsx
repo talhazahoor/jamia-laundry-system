@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import { User, UserRole } from '@/types';
 import {
   ShieldCheck,
@@ -11,7 +12,9 @@ import {
 } from 'lucide-react';
 
 export default function UsersPage() {
-  const { user } = useApp();
+  const { user, lang } = useApp();
+  const t = translations[lang];
+
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -56,7 +59,7 @@ export default function UsersPage() {
       setNewUser({ username: '', password: '', full_name: '', role: 'Counter Operator' });
       fetchUsers();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     }
   };
 
@@ -73,11 +76,11 @@ export default function UsersPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to reset password');
 
-      alert('پاس ورڈ تبدیل ہو گیا');
+      alert(lang === 'en' ? 'Password changed successfully' : 'پاس ورڈ تبدیل ہو گیا');
       setResetModalUser(null);
       setNewPassword('');
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     }
   };
 
@@ -87,9 +90,9 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">صارفین اور اختیارات (Users & Roles)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.user_heading}</h1>
           <p className="text-[11px] text-slate-500">
-            ایڈمنسٹریٹر اور کاؤنٹر آپریٹر اکاؤنٹس کا نظم
+            {t.user_subheading}
           </p>
         </div>
 
@@ -98,27 +101,27 @@ export default function UsersPage() {
           className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition"
         >
           <UserPlus className="w-3.5 h-3.5" />
-          <span>نیا صارف</span>
+          <span>{t.new_user}</span>
         </button>
       </div>
 
       {/* Users Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-right">
+          <table className="w-full text-xs text-start">
             <thead className="bg-slate-50 text-[11px] text-slate-500 font-semibold border-b border-slate-200">
               <tr>
-                <th className="p-2.5">صارف (Username)</th>
-                <th className="p-2.5">مکمل نام</th>
-                <th className="p-2.5 text-center">کردار (Role)</th>
-                <th className="p-2.5 text-center">حالت</th>
-                <th className="p-2.5 text-center">پاس ورڈ</th>
+                <th className="p-2.5 text-start">{t.username_col}</th>
+                <th className="p-2.5 text-start">{t.fullname_col}</th>
+                <th className="p-2.5 text-center">{t.role_col}</th>
+                <th className="p-2.5 text-center">{t.status}</th>
+                <th className="p-2.5 text-center">{t.password}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-slate-400">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={5} className="p-8 text-center text-slate-400">{t.loading}</td>
                 </tr>
               ) : (
                 users.map(u => (
@@ -126,17 +129,17 @@ export default function UsersPage() {
                     <td className="p-2.5 font-mono font-bold text-slate-900">{u.username}</td>
                     <td className="p-2.5 font-semibold text-slate-800">{u.full_name}</td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         u.role === 'Administrator' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'
                       }`}>
-                        {u.role === 'Administrator' ? 'ایڈمن' : 'کاؤنٹر آپریٹر'}
+                        {u.role === 'Administrator' ? t.admin_role : u.role === 'Viewer' ? t.viewer_role : t.operator_role}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-medium ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
                         u.active ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                       }`}>
-                        {u.active ? 'فعال' : 'معطل'}
+                        {u.active ? t.active : (lang === 'en' ? 'Suspended' : 'معطل')}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
@@ -145,7 +148,7 @@ export default function UsersPage() {
                         className="text-slate-500 hover:text-slate-800 p-1 text-[11px] font-medium inline-flex items-center gap-1"
                       >
                         <KeyRound className="w-3 h-3 text-slate-400" />
-                        <span>ری سیٹ</span>
+                        <span>{t.reset_btn}</span>
                       </button>
                     </td>
                   </tr>
@@ -161,7 +164,7 @@ export default function UsersPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b">
-              <span className="font-bold text-slate-900 text-sm">نیا صارف بنائیں</span>
+              <span className="font-bold text-slate-900 text-sm">{t.create_user_modal}</span>
               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-4 h-4" />
               </button>
@@ -169,7 +172,7 @@ export default function UsersPage() {
 
             <form onSubmit={handleCreateUser} className="space-y-2.5">
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">Username *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.username_col} *</label>
                 <input
                   type="text"
                   required
@@ -181,19 +184,19 @@ export default function UsersPage() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">مکمل نام *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.fullname_col} *</label>
                 <input
                   type="text"
                   required
                   value={newUser.full_name}
                   onChange={e => setNewUser({ ...newUser, full_name: e.target.value })}
                   className="w-full p-2 border rounded-lg font-semibold"
-                  placeholder="محمد بلال"
+                  placeholder={lang === 'en' ? 'Muhammad Bilal' : 'محمد بلال'}
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">پاس ورڈ *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.password} *</label>
                 <input
                   type="password"
                   required
@@ -205,15 +208,15 @@ export default function UsersPage() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">اختیار (Role) *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.role_col} *</label>
                 <select
                   value={newUser.role}
                   onChange={e => setNewUser({ ...newUser, role: e.target.value as any })}
                   className="w-full p-2 border rounded-lg"
                 >
-                  <option value="Counter Operator">Counter Operator (آپریٹر)</option>
-                  <option value="Administrator">Administrator (ایڈمن)</option>
-                  <option value="Viewer">Viewer (صرف مشاہدہ)</option>
+                  <option value="Counter Operator">{t.operator_role}</option>
+                  <option value="Administrator">{t.admin_role}</option>
+                  <option value="Viewer">{t.viewer_role}</option>
                 </select>
               </div>
 
@@ -223,13 +226,13 @@ export default function UsersPage() {
                   onClick={() => setShowModal(false)}
                   className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
                 >
-                  کینسل
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500"
                 >
-                  محفوظ کریں
+                  {t.save}
                 </button>
               </div>
             </form>
@@ -243,7 +246,7 @@ export default function UsersPage() {
           <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b">
               <span className="font-bold text-slate-900 text-sm">
-                پاس ورڈ تبدیل کریں ({resetModalUser.username})
+                {t.reset_password_modal} ({resetModalUser.username})
               </span>
               <button onClick={() => setResetModalUser(null)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-4 h-4" />
@@ -252,7 +255,7 @@ export default function UsersPage() {
 
             <form onSubmit={handleResetPassword} className="space-y-2.5">
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">نیا پاس ورڈ درج کریں *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.new_password_req}</label>
                 <input
                   type="password"
                   required
@@ -268,13 +271,13 @@ export default function UsersPage() {
                   onClick={() => setResetModalUser(null)}
                   className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
                 >
-                  کینسل
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500"
                 >
-                  تبدیل کریں
+                  {t.change_btn}
                 </button>
               </div>
             </form>

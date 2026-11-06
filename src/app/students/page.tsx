@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { translations } from '@/lib/i18n';
 import { Student } from '@/types';
 import WebcamCaptureModal from '@/components/WebcamCaptureModal';
 import * as XLSX from 'xlsx';
@@ -18,7 +19,9 @@ import {
 } from 'lucide-react';
 
 export default function StudentsPage() {
-  const { user } = useApp();
+  const { user, lang } = useApp();
+  const t = translations[lang];
+
   const [students, setStudents] = useState<Student[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'sarkari' | 'private'>('all');
@@ -65,13 +68,13 @@ export default function StudentsPage() {
         body: JSON.stringify(editingStudent),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'طالب علم محفوظ نہیں ہو سکا');
+      if (!res.ok) throw new Error(data.error || (lang === 'en' ? 'Failed to save student' : 'طالب علم محفوظ نہیں ہو سکا'));
 
       setShowModal(false);
       setEditingStudent({});
       fetchStudents();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     } finally {
       setSavingStudent(false);
     }
@@ -91,7 +94,7 @@ export default function StudentsPage() {
         const data = XLSX.utils.sheet_to_json(ws);
         setImportRows(data);
       } catch (err) {
-        alert('فائل پڑھنے میں خرابی پیش آئی');
+        alert(lang === 'en' ? 'Failed to read file' : 'فائل پڑھنے میں خرابی پیش آئی');
       }
     };
     reader.readAsBinaryString(file);
@@ -118,7 +121,7 @@ export default function StudentsPage() {
       });
       fetchStudents();
     } catch (err: any) {
-      alert(`خرابی: ${err.message}`);
+      alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);
     } finally {
       setImporting(false);
     }
@@ -145,9 +148,9 @@ export default function StudentsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div>
-          <h1 className="text-base font-bold text-slate-900">طلبہ ڈائرکٹری (Students)</h1>
+          <h1 className="text-base font-bold text-slate-900">{t.students_title}</h1>
           <p className="text-[11px] text-slate-500">
-            رجسٹرڈ طلبہ کی تفصیل، اقامت گاہ اور لانڈری اہلیت
+            {t.students_subtitle}
           </p>
         </div>
 
@@ -162,7 +165,7 @@ export default function StudentsPage() {
               className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 flex items-center gap-1.5 transition"
             >
               <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-              <span>ایکسل امپورٹ</span>
+              <span>{t.bulk_import}</span>
             </button>
 
             <button
@@ -171,7 +174,7 @@ export default function StudentsPage() {
                   reg_no: '',
                   name: '',
                   father_name: '',
-                  class_name: 'درجہ اولیٰ',
+                  class_name: lang === 'en' ? 'Grade 1' : 'درجہ اولیٰ',
                   section: 'A',
                   iqamat: '',
                   status: 'Active',
@@ -182,7 +185,7 @@ export default function StudentsPage() {
               className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition"
             >
               <UserPlus className="w-3.5 h-3.5" />
-              <span>نیا طالب علم</span>
+              <span>{t.new_student}</span>
             </button>
           </div>
         )}
@@ -195,10 +198,14 @@ export default function StudentsPage() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="رجسٹریشن نمبر، نام، ولدیت یا کلاس سے تلاش کریں..."
-            className="w-full text-xs pl-3 pr-8 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
+            placeholder={t.search_students_placeholder}
+            className={`w-full text-xs py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium ${
+              lang === 'en' ? 'pl-8 pr-3' : 'pr-8 pl-3'
+            }`}
           />
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+          <Search className={`w-3.5 h-3.5 text-slate-400 absolute top-2.5 pointer-events-none ${
+            lang === 'en' ? 'left-2.5' : 'right-2.5'
+          }`} />
         </div>
 
         <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[11px] font-semibold self-start sm:self-auto">
@@ -206,19 +213,19 @@ export default function StudentsPage() {
             onClick={() => setCategoryFilter('all')}
             className={`px-2.5 py-1 rounded-md transition ${categoryFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}`}
           >
-            تمام ({students.length})
+            {t.all} ({students.length})
           </button>
           <button
             onClick={() => setCategoryFilter('sarkari')}
             className={`px-2.5 py-1 rounded-md transition ${categoryFilter === 'sarkari' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600'}`}
           >
-            سرکاری ({students.filter(s => s.is_sarkari).length})
+            {t.sarkari} ({students.filter(s => s.is_sarkari).length})
           </button>
           <button
             onClick={() => setCategoryFilter('private')}
             className={`px-2.5 py-1 rounded-md transition ${categoryFilter === 'private' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600'}`}
           >
-            پرائیویٹ ({students.filter(s => !s.is_sarkari).length})
+            {t.private} ({students.filter(s => !s.is_sarkari).length})
           </button>
         </div>
       </div>
@@ -226,29 +233,29 @@ export default function StudentsPage() {
       {/* Students Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-right">
+          <table className="w-full text-xs text-start">
             <thead className="bg-slate-50 text-[11px] text-slate-500 font-semibold border-b border-slate-200">
               <tr>
-                <th className="p-2.5 text-center">تصویر</th>
-                <th className="p-2.5">رجسٹریشن</th>
-                <th className="p-2.5">نام طالب علم</th>
-                <th className="p-2.5">ولدیت</th>
-                <th className="p-2.5">درجہ / کلاس</th>
-                <th className="p-2.5">اقامت / ہاسٹل</th>
-                <th className="p-2.5">فون</th>
-                <th className="p-2.5 text-center">لانڈری کیٹیگری</th>
-                <th className="p-2.5 text-center">حالت</th>
-                {user?.role === 'Administrator' && <th className="p-2.5 text-center">ایکشن</th>}
+                <th className="p-2.5 text-center">{t.photo}</th>
+                <th className="p-2.5 text-start">{t.registration_no}</th>
+                <th className="p-2.5 text-start">{t.student_name}</th>
+                <th className="p-2.5 text-start">{t.father_name}</th>
+                <th className="p-2.5 text-start">{t.class_name}</th>
+                <th className="p-2.5 text-start">{t.iqamat}</th>
+                <th className="p-2.5 text-start">{t.phone}</th>
+                <th className="p-2.5 text-center">{t.laundry_category}</th>
+                <th className="p-2.5 text-center">{t.status}</th>
+                {user?.role === 'Administrator' && <th className="p-2.5 text-center">{t.actions}</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">{t.loading}</td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">کوئی ریکارڈ نہیں ملا</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">{t.no_students_found}</td>
                 </tr>
               ) : (
                 filteredStudents.map(stu => (
@@ -259,13 +266,13 @@ export default function StudentsPage() {
                           <img src={stu.photo_url} alt={stu.name} className="w-7 h-7 rounded-full object-cover border mx-auto" />
                         ) : (
                           <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px] mx-auto">
-                            {stu.name ? stu.name.charAt(0) : 'ط'}
+                            {stu.name ? stu.name.charAt(0) : 'S'}
                           </div>
                         )}
                         <button
                           onClick={() => setWebcamTargetStudent(stu)}
                           className="absolute -bottom-1 -right-1 bg-slate-800 text-white p-0.5 rounded-full hover:bg-emerald-600"
-                          title="تصویر لیں"
+                          title={t.take_photo}
                         >
                           <Camera className="w-2 h-2" />
                         </button>
@@ -276,22 +283,22 @@ export default function StudentsPage() {
                     <td className="p-2.5 text-slate-600">{stu.father_name}</td>
                     <td className="p-2.5 text-slate-700">
                       <div>{stu.class_name}</div>
-                      {stu.section && <span className="text-[10px] text-slate-400">سیکشن: {stu.section}</span>}
+                      {stu.section && <span className="text-[10px] text-slate-400">{t.section_label}: {stu.section}</span>}
                     </td>
                     <td className="p-2.5 text-slate-600 truncate max-w-[160px]">{stu.iqamat}</td>
                     <td className="p-2.5 text-slate-500 font-mono text-[11px]">{stu.contact || '-'}</td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         stu.is_sarkari ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
                       }`}>
-                        {stu.is_sarkari ? 'سرکاری' : 'پرائیویٹ'}
+                        {stu.is_sarkari ? t.sarkari : t.private}
                       </span>
                     </td>
                     <td className="p-2.5 text-center">
-                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                         stu.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                       }`}>
-                        {stu.status === 'Active' ? 'فعال' : stu.status}
+                        {stu.status === 'Active' ? t.active : stu.status}
                       </span>
                     </td>
                     {user?.role === 'Administrator' && (
@@ -302,7 +309,7 @@ export default function StudentsPage() {
                             setShowModal(true);
                           }}
                           className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-                          title="ترمیم کریں"
+                          title={t.edit}
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
@@ -322,7 +329,7 @@ export default function StudentsPage() {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="font-bold text-slate-900 text-sm">
-                {editingStudent.id ? 'طالب علم کے کوائف میں ترمیم' : 'نیا طالب علم درج کریں'}
+                {editingStudent.id ? t.edit_student_title : t.add_student_title}
               </span>
               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-4 h-4" />
@@ -332,7 +339,7 @@ export default function StudentsPage() {
             <form onSubmit={handleSaveStudent} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">رجسٹریشن نمبر *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.reg_no_req}</label>
                   <input
                     type="text"
                     required
@@ -342,7 +349,7 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">نام طالب علم *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.student_name_req}</label>
                   <input
                     type="text"
                     required
@@ -355,7 +362,7 @@ export default function StudentsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">ولدیت *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.father_name_req}</label>
                   <input
                     type="text"
                     required
@@ -365,7 +372,7 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">درجہ / کلاس *</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.class_name_req}</label>
                   <input
                     type="text"
                     required
@@ -377,7 +384,7 @@ export default function StudentsPage() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">اقامت / ہاسٹل و کمرہ *</label>
+                <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.iqamat_req}</label>
                 <input
                   type="text"
                   required
@@ -389,15 +396,15 @@ export default function StudentsPage() {
 
               <div className="grid grid-cols-2 gap-2 pt-1 items-center">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">حیثیت (Status)</label>
+                  <label className="block text-[11px] font-medium text-slate-700 mb-1">{t.status}</label>
                   <select
                     value={editingStudent.status || 'Active'}
                     onChange={e => setEditingStudent({ ...editingStudent, status: e.target.value as any })}
                     className="w-full p-2 border rounded-lg"
                   >
-                    <option value="Active">Active (فعال)</option>
-                    <option value="Left">Left (فارغ ہو گیا)</option>
-                    <option value="Suspended">Suspended (معطل)</option>
+                    <option value="Active">{t.active}</option>
+                    <option value="Left">{lang === 'en' ? 'Left' : 'فارغ ہو گیا'}</option>
+                    <option value="Suspended">{lang === 'en' ? 'Suspended' : 'معطل'}</option>
                   </select>
                 </div>
                 <div className="flex items-center gap-1.5 pt-4">
@@ -409,7 +416,7 @@ export default function StudentsPage() {
                     className="w-3.5 h-3.5 text-emerald-600 rounded"
                   />
                   <label htmlFor="sarkariCheck" className="font-semibold text-slate-800">
-                    سرکاری لانڈری کے اہل ہیں
+                    {t.sarkari_eligible_check}
                   </label>
                 </div>
               </div>
@@ -420,14 +427,14 @@ export default function StudentsPage() {
                   onClick={() => setShowModal(false)}
                   className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
                 >
-                  کینسل
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={savingStudent}
                   className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 shadow-sm"
                 >
-                  {savingStudent ? 'محفوظ ہو رہا ہے...' : 'محفوظ کریں'}
+                  {savingStudent ? t.saving : t.save}
                 </button>
               </div>
             </form>
@@ -440,14 +447,14 @@ export default function StudentsPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-4 border border-slate-200 text-xs space-y-3">
             <div className="flex justify-between items-center pb-2 border-b">
-              <span className="font-bold text-slate-900 text-sm">ایکسل سے طلبہ کا امپورٹ</span>
+              <span className="font-bold text-slate-900 text-sm">{t.excel_import_title}</span>
               <a
                 href="/api/students/template"
                 download
                 className="text-emerald-700 hover:underline flex items-center gap-1 text-[11px]"
               >
                 <Download className="w-3 h-3" />
-                <span>ٹیمپلیٹ ڈاؤن لوڈ کریں</span>
+                <span>{t.download_template}</span>
               </a>
             </div>
 
@@ -460,17 +467,17 @@ export default function StudentsPage() {
               />
               {importRows.length > 0 && (
                 <div className="mt-2 text-emerald-700 font-semibold">
-                  ✓ {importRows.length} طلبہ کی فائل پڑھی گئی
+                  ✓ {importRows.length} {t.files_read_success}
                 </div>
               )}
             </div>
 
             {importSummary && (
               <div className="p-2.5 bg-slate-50 rounded border text-[11px] space-y-1">
-                <div>نئے شامل ہوئے: <strong className="text-emerald-700 font-mono">{importSummary.added}</strong></div>
-                <div>اپ ڈیٹ ہوئے: <strong className="text-blue-700 font-mono">{importSummary.updated}</strong></div>
+                <div>{t.newly_added} <strong className="text-emerald-700 font-mono">{importSummary.added}</strong></div>
+                <div>{t.updated} <strong className="text-blue-700 font-mono">{importSummary.updated}</strong></div>
                 {importSummary.errors.length > 0 && (
-                  <div>خرابی: <strong className="text-rose-700 font-mono">{importSummary.errors.length}</strong></div>
+                  <div>{t.errors} <strong className="text-rose-700 font-mono">{importSummary.errors.length}</strong></div>
                 )}
               </div>
             )}
@@ -480,14 +487,14 @@ export default function StudentsPage() {
                 onClick={() => setShowImportModal(false)}
                 className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
               >
-                بند کریں
+                {t.close}
               </button>
               <button
                 disabled={importing || importRows.length === 0}
                 onClick={executeBulkImport}
                 className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 disabled:opacity-50"
               >
-                {importing ? 'امپورٹ جاری ہے...' : 'امپورٹ شروع کریں'}
+                {importing ? t.importing_label : t.start_import}
               </button>
             </div>
           </div>
