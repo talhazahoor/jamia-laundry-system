@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 241, 245, 249;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.urdu-font {
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Jameel Noori Nastaleeq', 'Traditional Arabic', serif;
+  line-height: 2;
+}
+
+.urdu-compact {
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Jameel Noori Nastaleeq', serif;
+  line-height: 1.6;
+}
+
+/* Thermal Mini Receipt Printer CSS */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .thermal-receipt-printable, .thermal-receipt-printable * {
+    visibility: visible;
+  }
+  
+  .thermal-receipt-printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    background: white !important;
+    color: black !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+  }
+
+  .thermal-receipt-printable.width-58mm {
+    width: 58mm !important;
+    font-size: 9.5px !important;
+  }
+
+  /* For A4 reports print */
+  .a4-report-printable, .a4-report-printable * {
+    visibility: visible;
+  }
+  
+  .a4-report-printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    background: white !important;
+    color: black !important;
+  }
+}
