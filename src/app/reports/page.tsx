@@ -15,6 +15,11 @@ import {
   DollarSign,
   AlertCircle,
   FileText,
+  Sparkles,
+  Search,
+  Building,
+  ShieldCheck,
+  TrendingUp,
 } from 'lucide-react';
 import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 
@@ -124,153 +129,164 @@ export default function ReportsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
       
-      {/* Top Controls Card (Hidden during print) */}
-      <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-4 print:hidden">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-              <BarChart3 className="w-6 h-6" />
+      {/* Top Banner (Print-hidden) */}
+      <div className="bg-gradient-to-r from-jamia-950 via-jamia-900 to-jamia-850 rounded-3xl p-6 sm:p-8 text-white shadow-jamia relative overflow-hidden border border-emerald-900/40 print:hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle_at_top_right,rgba(217,119,6,0.15),transparent_70%)] pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400/20 to-jamia-800 border border-gold-400/30 flex items-center justify-center shadow-inner">
+              <BarChart3 className="w-7 h-7 text-gold-400" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900 urdu-compact">
-                جامعہ لانڈری تفصیلی رپورٹس (Reports & Analytics)
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400/10 border border-gold-400/30 text-gold-300 text-[11px] font-semibold mb-1">
+                <Sparkles className="w-3 h-3" />
+                <span>جامعہ لانڈری ڈیٹا اور گوشوارے</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white urdu-naskh">
+                جامعہ لانڈری تفصیلی رپورٹس و آڈٹ (Reports & Analytics)
               </h1>
-              <p className="text-xs text-slate-500">
-                روزانہ، ہفتہ وار، اشیاء وار، آمدنی اور لوڈ شیٹس
+              <p className="text-xs text-emerald-200/80 mt-1">
+                روزانہ کلیکشن، ہفتہ وار خلاصہ، طلبہ ہسٹری، اشیاء وار لوڈ اور مالیاتی گوشوارے (R1-R13)
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={exportToExcel}
-              className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow"
+              className="bg-jamia-800 hover:bg-jamia-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 border border-emerald-700/60 transition shadow-sm"
             >
-              <Download className="w-4 h-4 text-emerald-400" />
-              <span>ایکسل ڈاؤن لوڈ (Excel)</span>
+              <Download className="w-4 h-4 text-gold-400" />
+              <span>ایکسل شیٹ (Excel)</span>
             </button>
             <button
               onClick={handlePrint}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 shadow"
+              className="bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-slate-950 text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <Printer className="w-4 h-4" />
-              <span>پرنٹ کریں (A4 Print)</span>
+              <span>رپورٹ پرنٹ کریں (A4 Print)</span>
             </button>
           </div>
         </div>
 
-        {/* Report Selector Tabs */}
-        <div className="flex overflow-x-auto gap-1 border-b border-slate-200 pb-2 scrollbar-none text-xs">
+        {/* Report Selector Tabs Bar */}
+        <div className="mt-6 pt-5 border-t border-emerald-800/50 flex overflow-x-auto gap-2 scrollbar-none pb-1">
           {[
-            { id: 'daily', label: 'R1: روزانہ کلیکشن رپورٹ' },
-            { id: 'weekly', label: 'R2: ہفتہ وار / تاریخ خلاصہ' },
+            { id: 'daily', label: 'R1: روزانہ کلیکشن' },
+            { id: 'weekly', label: 'R2: ہفتہ وار خلاصہ' },
             { id: 'student_history', label: 'R3: طالب علم ہسٹری' },
-            { id: 'item_wise', label: 'R4: اشیاء وار تعداد' },
-            { id: 'sarkari_days', label: 'R5: منگل / جمعہ لوڈ' },
-            { id: 'revenue', label: 'R6: پرائیویٹ آمدنی' },
+            { id: 'item_wise', label: 'R4: اشیاء وار لوڈ' },
+            { id: 'sarkari_days', label: 'R5: منگل / جمعہ شیٹ' },
             { id: 'unpaid', label: 'R7: بقایا جات (Unpaid)' },
             { id: 'pending_delivery', label: 'R8: غیر واپس شدہ کپڑے' },
-            { id: 'bag_sheet', label: 'R13: دھلائی بیگ شیٹ' },
             { id: 'audit_logs', label: 'آڈٹ لاگ (Audit Trail)' },
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setSelectedReport(tab.id)}
-              className={`px-3 py-1.5 rounded-lg font-bold whitespace-nowrap transition ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 selectedReport === tab.id
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gold-500 text-slate-950 shadow-md font-black scale-105'
+                  : 'bg-black/20 text-emerald-100 hover:bg-black/40 border border-white/5'
               }`}
             >
               {tab.label}
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Filter Controls Bar */}
-        <div className="flex flex-wrap items-center gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
-          <div className="flex items-center gap-1 font-semibold text-slate-700">
-            <Filter className="w-3.5 h-3.5 text-emerald-600" />
-            <span>مدت:</span>
+      {/* Filter Controls Bar (Print-hidden) */}
+      <div className="bg-white p-4 rounded-2xl shadow-subtle border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs print:hidden">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-1.5 font-bold text-slate-700 bg-slate-100 px-2.5 py-1.5 rounded-lg">
+            <Filter className="w-3.5 h-3.5 text-jamia-700" />
+            <span>تاریخ منتخب کریں:</span>
           </div>
 
           <input
             type="date"
             value={fromDate}
             onChange={e => setFromDate(e.target.value)}
-            className="p-1.5 border rounded-lg bg-white"
+            className="p-1.5 px-2.5 border border-slate-200 rounded-xl bg-slate-50 font-mono font-medium focus:bg-white focus:ring-2 focus:ring-jamia-600 focus:outline-none"
           />
-          <span>تا</span>
+          <span className="text-slate-400 font-bold">تا</span>
           <input
             type="date"
             value={toDate}
             onChange={e => setToDate(e.target.value)}
-            className="p-1.5 border rounded-lg bg-white"
+            className="p-1.5 px-2.5 border border-slate-200 rounded-xl bg-slate-50 font-mono font-medium focus:bg-white focus:ring-2 focus:ring-jamia-600 focus:outline-none"
           />
 
           <div className="flex gap-1">
             <button
               onClick={() => setQuickRange('today')}
-              className="px-2 py-1 bg-white hover:bg-slate-200 border rounded text-[11px]"
+              className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition"
             >
               آج (Today)
             </button>
             <button
               onClick={() => setQuickRange('week')}
-              className="px-2 py-1 bg-white hover:bg-slate-200 border rounded text-[11px]"
+              className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition"
             >
-              اس ہفتے (Week)
+              اس ہفتے
             </button>
             <button
               onClick={() => setQuickRange('month')}
-              className="px-2 py-1 bg-white hover:bg-slate-200 border rounded text-[11px]"
+              className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition"
             >
-              اس مہینے (Month)
+              اس مہینے
             </button>
           </div>
-
-          {selectedReport === 'student_history' && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-slate-700">رجسٹریشن نمبر:</span>
-              <input
-                type="text"
-                placeholder="مثلاً: 1234"
-                value={studentId}
-                onChange={e => setStudentId(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && fetchReport()}
-                className="p-1.5 border rounded-lg bg-white w-28 font-mono"
-              />
-              <button
-                onClick={fetchReport}
-                className="bg-emerald-600 text-white px-2 py-1.5 rounded"
-              >
-                تلاش
-              </button>
-            </div>
-          )}
         </div>
+
+        {selectedReport === 'student_history' && (
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-700">طالب علم کا رجسٹریشن نمبر:</span>
+            <input
+              type="text"
+              placeholder="مثلاً: J-1024"
+              value={studentId}
+              onChange={e => setStudentId(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && fetchReport()}
+              className="p-1.5 px-3 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white w-32 font-mono font-bold focus:ring-2 focus:ring-jamia-600 focus:outline-none"
+            />
+            <button
+              onClick={fetchReport}
+              className="bg-jamia-900 text-gold-300 font-bold px-3 py-1.5 rounded-xl hover:bg-jamia-800 transition"
+            >
+              تلاش کریں
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Printable Report Output Container (A4 Printable) */}
-      <div className="a4-report-printable bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      {/* Printable Report Output Container */}
+      <div className="a4-report-printable bg-white p-6 sm:p-8 rounded-3xl shadow-subtle border border-slate-200/80">
         
-        {/* Printable Formal Header (REP-02) */}
-        <div className="text-center pb-4 border-b-2 border-slate-900 mb-6">
-          <h2 className="text-xl font-bold urdu-compact text-slate-900 leading-tight">
+        {/* Printable Formal Institutional Header */}
+        <div className="text-center pb-5 border-b-2 border-jamia-900 mb-6">
+          <div className="text-xs font-bold text-gold-700 mb-0.5">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <h2 className="text-2xl font-bold urdu-naskh text-jamia-950 leading-tight">
             {settings.jamia_name}
           </h2>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700">
-            {settings.jamia_name_en} - {settings.laundry_name}
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 mt-0.5">
+            {settings.jamia_name_en} — {settings.laundry_name}
           </h3>
-          <div className="text-xs text-slate-600 mt-1">
-            رپورٹ: <span className="font-bold underline">{selectedReport.toUpperCase()}</span> | تاریخ: {fromDate} {fromDate !== toDate ? `تا ${toDate}` : ''} | پرنٹ تاریخ: {new Date().toLocaleString()}
+          <div className="inline-flex items-center gap-3 text-xs text-slate-600 mt-2 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+            <span>رپورٹ کی قسم: <strong className="text-jamia-900 uppercase">{selectedReport}</strong></span>
+            <span>•</span>
+            <span>تاریخ: <strong className="font-mono">{fromDate}</strong> {fromDate !== toDate ? `تا ${toDate}` : ''}</span>
+            <span>•</span>
+            <span>پرنٹ وقت: <span className="font-mono">{new Date().toLocaleString()}</span></span>
           </div>
         </div>
 
         {/* Loading state */}
         {loading && (
-          <div className="py-12 text-center text-slate-500 text-sm">
-            رپورٹ تیار کی جا رہی ہے... (Loading Report)
+          <div className="py-16 text-center text-slate-500">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-jamia-800 border-t-transparent mb-2"></div>
+            <p className="text-xs font-semibold">رپورٹ کا مکمل ڈیٹا مرتب کیا جا رہا ہے...</p>
           </div>
         )}
 
@@ -279,49 +295,56 @@ export default function ReportsPage() {
           <div className="space-y-6">
             {/* KPI Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-slate-50 p-3 rounded-xl border">
-                <div className="text-xs text-slate-500">کل رسیدات</div>
-                <div className="text-2xl font-black text-slate-900">{reportData.summary.totalReceipts}</div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  سرکاری: {reportData.summary.sarkariCount} | پرائیویٹ: {reportData.summary.privateCount}
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100/70 p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div className="text-[11px] font-semibold text-slate-500">کل رسیدات (Total Receipts)</div>
+                <div className="text-2xl font-black text-slate-900 mt-1 font-mono">{reportData.summary.totalReceipts}</div>
+                <div className="text-[11px] text-slate-600 mt-2 pt-2 border-t border-slate-200/60 flex justify-between">
+                  <span>سرکاری: <strong>{reportData.summary.sarkariCount}</strong></span>
+                  <span>پرائیویٹ: <strong>{reportData.summary.privateCount}</strong></span>
                 </div>
               </div>
 
-              <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
-                <div className="text-xs text-emerald-800 font-semibold">کل کپڑے (Pieces)</div>
-                <div className="text-2xl font-black text-emerald-900">{reportData.summary.totalPieces}</div>
-                <div className="text-[11px] text-emerald-700 mt-1">
-                  سرکاری: {reportData.summary.sarkariPieces} | پرائیویٹ: {reportData.summary.privatePieces}
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/40 p-4 rounded-2xl border border-emerald-200 shadow-sm">
+                <div className="text-[11px] font-semibold text-emerald-800">کل کپڑے (Total Pieces)</div>
+                <div className="text-2xl font-black text-emerald-950 mt-1 font-mono">{reportData.summary.totalPieces}</div>
+                <div className="text-[11px] text-emerald-800 mt-2 pt-2 border-t border-emerald-200/60 flex justify-between">
+                  <span>سرکاری: <strong>{reportData.summary.sarkariPieces}</strong></span>
+                  <span>پرائیویٹ: <strong>{reportData.summary.privatePieces}</strong></span>
                 </div>
               </div>
 
-              <div className="bg-amber-50 p-3 rounded-xl border border-amber-200">
-                <div className="text-xs text-amber-800 font-semibold">پرائیویٹ نقد وصولی</div>
-                <div className="text-2xl font-black text-amber-900">Rs {reportData.summary.privateCashCollected}</div>
-                <div className="text-[11px] text-amber-700 mt-1">کاؤنٹر کیش</div>
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100/40 p-4 rounded-2xl border border-amber-200 shadow-sm">
+                <div className="text-[11px] font-semibold text-amber-900">پرائیویٹ نقد وصولی (Cash)</div>
+                <div className="text-2xl font-black text-amber-950 mt-1 font-mono">Rs {reportData.summary.privateCashCollected}</div>
+                <div className="text-[11px] text-amber-800 mt-2 pt-2 border-t border-amber-200/60">
+                  <span>کاؤنٹر کیش وصول شدہ</span>
+                </div>
               </div>
 
-              <div className="bg-red-50 p-3 rounded-xl border border-red-200">
-                <div className="text-xs text-red-800 font-semibold">غیر ادا شدہ (Unpaid)</div>
-                <div className="text-2xl font-black text-red-900">Rs {reportData.summary.privateUnpaidTotal}</div>
-                <div className="text-[11px] text-red-700 mt-1">واپسی پر وصولی</div>
+              <div className="bg-gradient-to-br from-rose-50 to-rose-100/40 p-4 rounded-2xl border border-rose-200 shadow-sm">
+                <div className="text-[11px] font-semibold text-rose-900">غیر ادا شدہ رقم (Unpaid)</div>
+                <div className="text-2xl font-black text-rose-950 mt-1 font-mono">Rs {reportData.summary.privateUnpaidTotal}</div>
+                <div className="text-[11px] text-rose-800 mt-2 pt-2 border-t border-rose-200/60">
+                  <span>واپسی ڈیلیوری پر وصول ہوگی</span>
+                </div>
               </div>
             </div>
 
             {/* Item Breakdown Summary Table */}
             <div>
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                اشیاء وار تقسیم (Item-wise Summary for the Day):
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <Shirt className="w-3.5 h-3.5 text-jamia-700" />
+                <span>اشیاء وار تفصیلی تقسیم (Item-wise Summary for Selected Date):</span>
               </h4>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <table className="w-full text-xs text-right">
-                  <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                  <thead className="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">
                     <tr>
-                      <th className="p-2.5">شے کا نام</th>
-                      <th className="p-2.5">English</th>
-                      <th className="p-2.5 text-center">سرکاری کپڑے</th>
-                      <th className="p-2.5 text-center">پرائیویٹ کپڑے</th>
-                      <th className="p-2.5 text-center font-black">میزان (Total)</th>
+                      <th className="p-3">شے کا نام</th>
+                      <th className="p-3">English Item</th>
+                      <th className="p-3 text-center">سرکاری تعداد (مفت)</th>
+                      <th className="p-3 text-center">پرائیویٹ تعداد</th>
+                      <th className="p-3 text-center font-black">میزان (Grand Total)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -329,12 +352,12 @@ export default function ReportsPage() {
                       const sQty = reportData.itemTotals.sarkari[item.id] || 0;
                       const pQty = reportData.itemTotals.private[item.id] || 0;
                       return (
-                        <tr key={item.id} className="hover:bg-slate-50">
-                          <td className="p-2.5 font-bold urdu-compact">{item.name_ur}</td>
-                          <td className="p-2.5 text-slate-600">{item.name_en}</td>
-                          <td className="p-2.5 text-center font-semibold text-blue-700">{sQty}</td>
-                          <td className="p-2.5 text-center font-semibold text-amber-700">{pQty}</td>
-                          <td className="p-2.5 text-center font-bold text-slate-900">{sQty + pQty} عدد</td>
+                        <tr key={item.id} className="hover:bg-slate-50 transition">
+                          <td className="p-3 font-bold urdu-compact text-slate-900">{item.name_ur}</td>
+                          <td className="p-3 text-slate-600">{item.name_en}</td>
+                          <td className="p-3 text-center font-bold text-jamia-800 font-mono">{sQty}</td>
+                          <td className="p-3 text-center font-bold text-amber-800 font-mono">{pQty}</td>
+                          <td className="p-3 text-center font-black text-slate-950 font-mono">{sQty + pQty} عدد</td>
                         </tr>
                       );
                     })}
@@ -348,9 +371,9 @@ export default function ReportsPage() {
         {/* R2: Weekly / Date-range Summary */}
         {!loading && (selectedReport === 'weekly' || selectedReport === 'date_range') && reportData?.days && (
           <div className="space-y-4">
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
                     <th className="p-3">تاریخ (Date)</th>
                     <th className="p-3 text-center">سرکاری رسیدات</th>
@@ -363,26 +386,26 @@ export default function ReportsPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData.days.map((d: any) => (
-                    <tr key={d.date} className="hover:bg-slate-50">
-                      <td className="p-3 font-bold text-slate-900">{d.date}</td>
-                      <td className="p-3 text-center text-blue-700">{d.sarkariReceipts}</td>
-                      <td className="p-3 text-center font-semibold text-blue-900">{d.sarkariPieces}</td>
-                      <td className="p-3 text-center text-amber-700">{d.privateReceipts}</td>
-                      <td className="p-3 text-center font-semibold text-amber-900">{d.privatePieces}</td>
-                      <td className="p-3 text-left font-bold text-emerald-700">Rs {d.revenue}</td>
-                      <td className="p-3 text-left text-red-600">Rs {d.unpaid}</td>
+                    <tr key={d.date} className="hover:bg-slate-50 transition">
+                      <td className="p-3 font-bold text-slate-900 font-mono">{d.date}</td>
+                      <td className="p-3 text-center text-blue-700 font-mono">{d.sarkariReceipts}</td>
+                      <td className="p-3 text-center font-semibold text-blue-900 font-mono">{d.sarkariPieces}</td>
+                      <td className="p-3 text-center text-amber-700 font-mono">{d.privateReceipts}</td>
+                      <td className="p-3 text-center font-semibold text-amber-900 font-mono">{d.privatePieces}</td>
+                      <td className="p-3 text-left font-bold text-emerald-700 font-mono">Rs {d.revenue}</td>
+                      <td className="p-3 text-left text-red-600 font-mono">Rs {d.unpaid}</td>
                     </tr>
                   ))}
                 </tbody>
-                <tfoot className="bg-slate-100 font-bold border-t">
+                <tfoot className="bg-slate-100 font-bold border-t border-slate-300">
                   <tr>
                     <td className="p-3">کل میزان (Grand Total)</td>
                     <td className="p-3 text-center">-</td>
-                    <td className="p-3 text-center text-blue-900">{reportData.totals?.sarkariPieces}</td>
+                    <td className="p-3 text-center text-blue-900 font-mono">{reportData.totals?.sarkariPieces}</td>
                     <td className="p-3 text-center">-</td>
-                    <td className="p-3 text-center text-amber-900">{reportData.totals?.privatePieces}</td>
-                    <td className="p-3 text-left text-emerald-800">Rs {reportData.totals?.totalRevenue}</td>
-                    <td className="p-3 text-left text-red-700">Rs {reportData.totals?.totalUnpaid}</td>
+                    <td className="p-3 text-center text-amber-900 font-mono">{reportData.totals?.privatePieces}</td>
+                    <td className="p-3 text-left text-emerald-800 font-mono">Rs {reportData.totals?.totalRevenue}</td>
+                    <td className="p-3 text-left text-red-700 font-mono">Rs {reportData.totals?.totalUnpaid}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -394,43 +417,49 @@ export default function ReportsPage() {
         {!loading && selectedReport === 'student_history' && (
           <div className="space-y-4">
             {reportData?.student && (
-              <div className="bg-slate-50 p-4 rounded-xl border flex justify-between items-center text-xs">
+              <div className="bg-gradient-to-r from-emerald-50 to-slate-50 p-5 rounded-2xl border border-emerald-200/80 flex justify-between items-center text-xs">
                 <div>
-                  <div className="text-base font-bold text-slate-900 urdu-compact">{reportData.student.name}</div>
-                  <div className="text-slate-600">ولدیت: {reportData.student.father_name} | کلاس: {reportData.student.class_name} ({reportData.student.section})</div>
-                  <div className="text-slate-600">اقامت: {reportData.student.iqamat}</div>
+                  <div className="text-base font-bold text-jamia-950 urdu-naskh">{reportData.student.name}</div>
+                  <div className="text-slate-600 mt-1">ولدیت: {reportData.student.father_name} | کلاس: {reportData.student.class_name} ({reportData.student.section})</div>
+                  <div className="text-slate-600">اقامت / ہاسٹل: {reportData.student.iqamat}</div>
                 </div>
                 <div className="text-left">
-                  <div className="font-mono text-base font-black">Reg: {reportData.student.reg_no}</div>
-                  <div className="text-emerald-700 font-bold">کل رسیدات: {reportData.totalReceipts}</div>
+                  <div className="font-mono text-base font-black text-jamia-950">Reg: {reportData.student.reg_no}</div>
+                  <div className="text-emerald-800 font-bold mt-1">کل رسیدات: {reportData.totalReceipts}</div>
                   <div className="text-slate-700 font-semibold">کل کپڑے: {reportData.totalPieces} عدد</div>
                 </div>
               </div>
             )}
 
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-2.5">رسید نمبر</th>
-                    <th className="p-2.5">قسم</th>
-                    <th className="p-2.5">تاریخ</th>
-                    <th className="p-2.5 text-center">کپڑے</th>
-                    <th className="p-2.5 text-left">بل</th>
-                    <th className="p-2.5 text-center">ادائیگی</th>
-                    <th className="p-2.5 text-center">حالت</th>
+                    <th className="p-3">رسید نمبر</th>
+                    <th className="p-3">قسم</th>
+                    <th className="p-3">تاریخ</th>
+                    <th className="p-3 text-center">کپڑے</th>
+                    <th className="p-3 text-left">بل رقم</th>
+                    <th className="p-3 text-center">ادائیگی</th>
+                    <th className="p-3 text-center">حالت</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData?.receipts?.map((r: any) => (
-                    <tr key={r.id}>
-                      <td className="p-2.5 font-bold">{r.receipt_no}</td>
-                      <td className="p-2.5">{r.type}</td>
-                      <td className="p-2.5 text-slate-600">{new Date(r.date_time).toLocaleDateString()}</td>
-                      <td className="p-2.5 text-center font-bold">{r.total_pieces}</td>
-                      <td className="p-2.5 text-left font-bold">{r.type === 'Private' ? `Rs ${r.total_amount}` : 'Rs 0'}</td>
-                      <td className="p-2.5 text-center">{r.payment_status}</td>
-                      <td className="p-2.5 text-center font-semibold">{r.status}</td>
+                    <tr key={r.id} className="hover:bg-slate-50 transition">
+                      <td className="p-3 font-bold font-mono text-slate-900">{r.receipt_no}</td>
+                      <td className="p-3 font-semibold">{r.type}</td>
+                      <td className="p-3 text-slate-600 font-mono">{new Date(r.date_time).toLocaleDateString()}</td>
+                      <td className="p-3 text-center font-bold font-mono">{r.total_pieces}</td>
+                      <td className="p-3 text-left font-bold font-mono">{r.type === 'Private' ? `Rs ${r.total_amount}` : 'Rs 0'}</td>
+                      <td className="p-3 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          r.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {r.payment_status}
+                        </span>
+                      </td>
+                      <td className="p-3 text-center font-semibold text-slate-700">{r.status}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -442,13 +471,13 @@ export default function ReportsPage() {
         {/* R4: Item-wise Report */}
         {!loading && selectedReport === 'item_wise' && reportData?.items && (
           <div className="space-y-4">
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
                     <th className="p-3">شے کا نام</th>
-                    <th className="p-3">English</th>
-                    <th className="p-3 text-left">ریٹ</th>
+                    <th className="p-3">English Name</th>
+                    <th className="p-3 text-left">ریٹ (روپے)</th>
                     <th className="p-3 text-center">سرکاری تعداد</th>
                     <th className="p-3 text-center">پرائیویٹ تعداد</th>
                     <th className="p-3 text-center font-bold">کل تعداد</th>
@@ -457,22 +486,22 @@ export default function ReportsPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData.items.map((i: any) => (
-                    <tr key={i.item_id} className="hover:bg-slate-50">
+                    <tr key={i.item_id} className="hover:bg-slate-50 transition">
                       <td className="p-3 font-bold text-slate-900 urdu-compact text-sm">{i.name_ur}</td>
                       <td className="p-3 text-slate-600">{i.name_en}</td>
-                      <td className="p-3 text-left">Rs {i.rate}</td>
-                      <td className="p-3 text-center font-semibold text-blue-700">{i.sarkariQty}</td>
-                      <td className="p-3 text-center font-semibold text-amber-700">{i.privateQty}</td>
-                      <td className="p-3 text-center font-black text-slate-900">{i.totalQty}</td>
-                      <td className="p-3 text-left font-bold text-emerald-700">Rs {i.totalAmt}</td>
+                      <td className="p-3 text-left font-mono">Rs {i.rate}</td>
+                      <td className="p-3 text-center font-semibold text-blue-700 font-mono">{i.sarkariQty}</td>
+                      <td className="p-3 text-center font-semibold text-amber-700 font-mono">{i.privateQty}</td>
+                      <td className="p-3 text-center font-black text-slate-900 font-mono">{i.totalQty}</td>
+                      <td className="p-3 text-left font-bold text-emerald-700 font-mono">Rs {i.totalAmt}</td>
                     </tr>
                   ))}
                 </tbody>
-                <tfoot className="bg-slate-100 font-bold border-t">
+                <tfoot className="bg-slate-100 font-bold border-t border-slate-300">
                   <tr>
                     <td colSpan={5} className="p-3">کل میزان (Total Pieces & Revenue)</td>
-                    <td className="p-3 text-center text-sm">{reportData.grandTotalPieces} عدد</td>
-                    <td className="p-3 text-left text-sm text-emerald-800">Rs {reportData.grandTotalRevenue}</td>
+                    <td className="p-3 text-center font-mono text-sm">{reportData.grandTotalPieces} عدد</td>
+                    <td className="p-3 text-left font-mono text-sm text-emerald-800">Rs {reportData.grandTotalRevenue}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -483,35 +512,35 @@ export default function ReportsPage() {
         {/* R5: Sarkari Collection Day Report */}
         {!loading && selectedReport === 'sarkari_days' && reportData?.classBreakdown && (
           <div className="space-y-6">
-            <div className="bg-blue-50 p-4 rounded-xl border border-blue-200 flex justify-between items-center text-xs">
+            <div className="bg-blue-50/70 p-5 rounded-2xl border border-blue-200 flex justify-between items-center text-xs">
               <div>
-                <div className="font-bold text-blue-900 text-sm">سرکاری کلیکشن کا خلاصہ (منگل / جمعہ)</div>
-                <div className="text-blue-700">دھلائی کے کام کی منصوبہ بندی اور لوڈ شیٹ</div>
+                <div className="font-bold text-blue-950 text-sm urdu-compact">سرکاری کلیکشن کا جامع خلاصہ (منگل / جمعہ)</div>
+                <div className="text-blue-700 mt-0.5">دھلائی کے کام کی منصوبہ بندی اور واشنگ لوڈ شیٹ</div>
               </div>
               <div className="text-left font-bold">
-                <div className="text-blue-900 text-base">{reportData.totalSarkariReceipts} رسیدات</div>
-                <div className="text-blue-700">{reportData.totalSarkariPieces} کل کپڑے</div>
+                <div className="text-blue-950 text-base font-mono">{reportData.totalSarkariReceipts} رسیدات</div>
+                <div className="text-blue-800 font-mono">{reportData.totalSarkariPieces} کل کپڑے</div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-bold text-xs text-slate-700 mb-2">درجہ وار تقسیم (Class-wise):</h4>
-                <div className="border rounded-lg overflow-hidden text-xs">
+                <h4 className="font-bold text-xs text-slate-800 mb-2.5">درجہ وار تقسیم (Class-wise Load):</h4>
+                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm text-xs">
                   <table className="w-full text-right">
-                    <thead className="bg-slate-100 font-bold">
+                    <thead className="bg-slate-100 font-bold border-b border-slate-200">
                       <tr>
-                        <th className="p-2">درجہ / کلاس</th>
-                        <th className="p-2 text-center">طلبہ کی تعداد</th>
-                        <th className="p-2 text-center">کل کپڑے</th>
+                        <th className="p-2.5">درجہ / کلاس</th>
+                        <th className="p-2.5 text-center">طلبہ کی تعداد</th>
+                        <th className="p-2.5 text-center">کل کپڑے</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {reportData.classBreakdown.map((c: any, idx: number) => (
-                        <tr key={idx}>
-                          <td className="p-2 font-semibold">{c.className}</td>
-                          <td className="p-2 text-center">{c.studentCount}</td>
-                          <td className="p-2 text-center font-bold">{c.pieces}</td>
+                        <tr key={idx} className="hover:bg-slate-50">
+                          <td className="p-2.5 font-semibold text-slate-900">{c.className}</td>
+                          <td className="p-2.5 text-center font-mono">{c.studentCount}</td>
+                          <td className="p-2.5 text-center font-bold text-jamia-900 font-mono">{c.pieces}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -520,22 +549,22 @@ export default function ReportsPage() {
               </div>
 
               <div>
-                <h4 className="font-bold text-xs text-slate-700 mb-2">اقامت وار تقسیم (Hostel-wise):</h4>
-                <div className="border rounded-lg overflow-hidden text-xs">
+                <h4 className="font-bold text-xs text-slate-800 mb-2.5">اقامت وار تقسیم (Hostel-wise Load):</h4>
+                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm text-xs">
                   <table className="w-full text-right">
-                    <thead className="bg-slate-100 font-bold">
+                    <thead className="bg-slate-100 font-bold border-b border-slate-200">
                       <tr>
-                        <th className="p-2">اقامت / ہاسٹل</th>
-                        <th className="p-2 text-center">طلبہ کی تعداد</th>
-                        <th className="p-2 text-center">کل کپڑے</th>
+                        <th className="p-2.5">اقامت / ہاسٹل</th>
+                        <th className="p-2.5 text-center">طلبہ کی تعداد</th>
+                        <th className="p-2.5 text-center">کل کپڑے</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {reportData.hostelBreakdown.map((h: any, idx: number) => (
-                        <tr key={idx}>
-                          <td className="p-2 font-semibold truncate max-w-[160px]">{h.hostel}</td>
-                          <td className="p-2 text-center">{h.studentCount}</td>
-                          <td className="p-2 text-center font-bold">{h.pieces}</td>
+                        <tr key={idx} className="hover:bg-slate-50">
+                          <td className="p-2.5 font-semibold truncate max-w-[160px] text-slate-900">{h.hostel}</td>
+                          <td className="p-2.5 text-center font-mono">{h.studentCount}</td>
+                          <td className="p-2.5 text-center font-bold text-jamia-900 font-mono">{h.pieces}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -549,38 +578,38 @@ export default function ReportsPage() {
         {/* R7: Unpaid Report */}
         {!loading && selectedReport === 'unpaid' && reportData?.receipts && (
           <div className="space-y-4">
-            <div className="bg-red-50 p-4 rounded-xl border border-red-200 flex justify-between items-center text-xs">
-              <div className="font-bold text-red-900">
-                کل غیر ادا شدہ رسیدات: {reportData.totalUnpaidCount}
+            <div className="bg-rose-50/70 p-5 rounded-2xl border border-rose-200 flex justify-between items-center text-xs">
+              <div className="font-bold text-rose-950">
+                کل غیر ادا شدہ رسیدات: <span className="font-mono text-sm">{reportData.totalUnpaidCount}</span>
               </div>
-              <div className="font-bold text-red-900 text-base">
-                کل واجب الادا رقم: Rs {reportData.totalUnpaidAmount}
+              <div className="font-bold text-rose-950 text-base">
+                کل واجب الادا رقم: <span className="font-mono">Rs {reportData.totalUnpaidAmount}</span>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-2.5">رسید نمبر</th>
-                    <th className="p-2.5">طالب علم کا نام</th>
-                    <th className="p-2.5">رجسٹریشن</th>
-                    <th className="p-2.5">کلاس / رہائش</th>
-                    <th className="p-2.5 text-center">کپڑے</th>
-                    <th className="p-2.5 text-left">واجب الادا رقم</th>
-                    <th className="p-2.5">تاریخ</th>
+                    <th className="p-3">رسید نمبر</th>
+                    <th className="p-3">طالب علم کا نام</th>
+                    <th className="p-3">رجسٹریشن</th>
+                    <th className="p-3">کلاس / رہائش</th>
+                    <th className="p-3 text-center">کپڑے</th>
+                    <th className="p-3 text-left">واجب الادا رقم</th>
+                    <th className="p-3">جمع تاریخ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData.receipts.map((r: any) => (
-                    <tr key={r.id} className="hover:bg-slate-50">
-                      <td className="p-2.5 font-bold font-mono">{r.receipt_no}</td>
-                      <td className="p-2.5 font-bold urdu-compact">{r.student_name}</td>
-                      <td className="p-2.5 font-mono">{r.student_reg_no}</td>
-                      <td className="p-2.5">{r.class_name} ({r.iqamat})</td>
-                      <td className="p-2.5 text-center font-bold">{r.total_pieces}</td>
-                      <td className="p-2.5 text-left font-black text-red-700">Rs {r.total_amount}</td>
-                      <td className="p-2.5 text-slate-500">{new Date(r.date_time).toLocaleDateString()}</td>
+                    <tr key={r.id} className="hover:bg-slate-50 transition">
+                      <td className="p-3 font-bold font-mono text-slate-900">{r.receipt_no}</td>
+                      <td className="p-3 font-bold urdu-compact">{r.student_name}</td>
+                      <td className="p-3 font-mono">{r.student_reg_no}</td>
+                      <td className="p-3">{r.class_name} ({r.iqamat})</td>
+                      <td className="p-3 text-center font-bold font-mono">{r.total_pieces}</td>
+                      <td className="p-3 text-left font-black text-rose-700 font-mono">Rs {r.total_amount}</td>
+                      <td className="p-3 text-slate-500 font-mono">{new Date(r.date_time).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -592,42 +621,44 @@ export default function ReportsPage() {
         {/* R8: Pending Delivery Aging Report */}
         {!loading && selectedReport === 'pending_delivery' && reportData?.receipts && (
           <div className="space-y-4">
-            <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between items-center text-xs">
-              <div className="font-bold text-amber-900">
-                غیر واپس شدہ کپڑے: {reportData.totalPending} رسیدات
+            <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200 flex justify-between items-center text-xs">
+              <div className="font-bold text-amber-950">
+                غیر واپس شدہ کپڑے: <span className="font-mono text-sm">{reportData.totalPending}</span> رسیدات
               </div>
-              <div className="font-bold text-red-700">
-                3 دن سے زیادہ التواء (Overdue 3+ Days): {reportData.overdueCount} رسیدات
+              <div className="font-bold text-rose-700">
+                3 دن سے زائد التواء: <span className="font-mono text-sm">{reportData.overdueCount}</span> رسیدات
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-2.5">رسید نمبر</th>
-                    <th className="p-2.5">قسم</th>
-                    <th className="p-2.5">طالب علم</th>
-                    <th className="p-2.5 text-center">کپڑے</th>
-                    <th className="p-2.5 text-center">التواء (عمر / دن)</th>
-                    <th className="p-2.5 text-center">موجودہ حالت</th>
-                    <th className="p-2.5">جمع کرانے کی تاریخ</th>
+                    <th className="p-3">رسید نمبر</th>
+                    <th className="p-3">قسم</th>
+                    <th className="p-3">طالب علم</th>
+                    <th className="p-3 text-center">کپڑے</th>
+                    <th className="p-3 text-center">التواء (عمر / دن)</th>
+                    <th className="p-3 text-center">موجودہ حالت</th>
+                    <th className="p-3">جمع تاریخ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {reportData.receipts.map((r: any) => (
-                    <tr key={r.id} className={r.is_overdue ? 'bg-red-50/70 font-semibold text-red-950' : 'hover:bg-slate-50'}>
-                      <td className="p-2.5 font-bold font-mono">{r.receipt_no}</td>
-                      <td className="p-2.5">{r.type}</td>
-                      <td className="p-2.5 urdu-compact">{r.student_name} ({r.student_reg_no})</td>
-                      <td className="p-2.5 text-center font-bold">{r.total_pieces}</td>
-                      <td className="p-2.5 text-center font-black">
-                        <span className={`px-2 py-0.5 rounded text-xs ${r.is_overdue ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-800'}`}>
+                    <tr key={r.id} className={r.is_overdue ? 'bg-rose-50/70 font-semibold text-rose-950' : 'hover:bg-slate-50 transition'}>
+                      <td className="p-3 font-bold font-mono">{r.receipt_no}</td>
+                      <td className="p-3 font-semibold">{r.type}</td>
+                      <td className="p-3 urdu-compact">{r.student_name} ({r.student_reg_no})</td>
+                      <td className="p-3 text-center font-bold font-mono">{r.total_pieces}</td>
+                      <td className="p-3 text-center font-black">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold ${
+                          r.is_overdue ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-800'
+                        }`}>
                           {r.age_days} دن
                         </span>
                       </td>
-                      <td className="p-2.5 text-center">{r.status}</td>
-                      <td className="p-2.5 text-slate-500">{new Date(r.date_time).toLocaleDateString()}</td>
+                      <td className="p-3 text-center">{r.status}</td>
+                      <td className="p-3 text-slate-500 font-mono">{new Date(r.date_time).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -639,29 +670,29 @@ export default function ReportsPage() {
         {/* Audit Log Report */}
         {!loading && selectedReport === 'audit_logs' && reportData?.logs && (
           <div className="space-y-4">
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
               <table className="w-full text-xs text-right">
-                <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+                <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-2.5">وقت و تاریخ</th>
-                    <th className="p-2.5">صارف (User)</th>
-                    <th className="p-2.5 text-center">ایکشن</th>
-                    <th className="p-2.5">ٹیبل / ریکارڈ</th>
-                    <th className="p-2.5">تفصیل / وجہ (Reason)</th>
+                    <th className="p-3">وقت و تاریخ</th>
+                    <th className="p-3">صارف (User)</th>
+                    <th className="p-3 text-center">ایکشن</th>
+                    <th className="p-3">ریکارڈ حوالہ</th>
+                    <th className="p-3">تفصیل / سبب (Reason)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
                   {reportData.logs.map((log: any) => (
-                    <tr key={log.id} className="hover:bg-slate-50">
-                      <td className="p-2.5 text-slate-500">{new Date(log.date_time).toLocaleString()}</td>
-                      <td className="p-2.5 font-bold text-slate-800">{log.user_name}</td>
-                      <td className="p-2.5 text-center">
-                        <span className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-800 font-bold text-[10px]">
+                    <tr key={log.id} className="hover:bg-slate-50 transition">
+                      <td className="p-3 text-slate-500">{new Date(log.date_time).toLocaleString()}</td>
+                      <td className="p-3 font-bold text-slate-800">{log.user_name}</td>
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 font-bold text-[10px]">
                           {log.action}
                         </span>
                       </td>
-                      <td className="p-2.5 font-semibold text-slate-700">{log.table_name} ({log.record_id})</td>
-                      <td className="p-2.5 font-sans urdu-compact text-slate-800">{log.reason || '-'}</td>
+                      <td className="p-3 font-semibold text-slate-700">{log.table_name} ({log.record_id})</td>
+                      <td className="p-3 font-sans urdu-compact text-slate-800">{log.reason || '-'}</td>
                     </tr>
                   ))}
                 </tbody>

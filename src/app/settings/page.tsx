@@ -13,6 +13,9 @@ import {
   Calendar,
   Printer,
   Building,
+  Sparkles,
+  AlertTriangle,
+  FileCode,
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -107,26 +110,33 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-            <SettingsIcon className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-slate-900 urdu-compact">
-              نظام کی ترتیبات اور ڈیٹا بیک اپ (Settings & Backup)
-            </h1>
-            <p className="text-xs text-slate-500">
-              پرنٹر، جامعہ کے کوائف، سرکاری دن اور بیک اپ کنٹرول
-            </p>
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-jamia-950 via-jamia-900 to-jamia-850 rounded-3xl p-6 sm:p-8 text-white shadow-jamia relative overflow-hidden border border-emerald-900/40">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle_at_top_right,rgba(217,119,6,0.15),transparent_70%)] pointer-events-none" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400/20 to-jamia-800 border border-gold-400/30 flex items-center justify-center shadow-inner">
+              <SettingsIcon className="w-7 h-7 text-gold-400" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400/10 border border-gold-400/30 text-gold-300 text-[11px] font-semibold mb-1">
+                <Sparkles className="w-3 h-3" />
+                <span>جامعہ ایڈمنسٹریشن پینل</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white urdu-naskh">
+                نظام کی ترتیبات اور ڈیٹا بیک اپ (Settings & Backup)
+              </h1>
+              <p className="text-xs text-emerald-200/80 mt-1">
+                ادارہ جاتی کوائف، پرنٹر سلیکشن، سرکاری کلیکشن کے ایام اور کلاؤڈ ڈیٹا بیک اپ
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {success && (
-        <div className="bg-emerald-600 text-white p-3 rounded-xl shadow flex items-center gap-2 text-xs font-semibold">
-          <CheckCircle2 className="w-5 h-5 shrink-0" />
+        <div className="bg-emerald-800 text-gold-300 p-4 rounded-2xl shadow-subtle flex items-center gap-3 text-xs font-bold border border-emerald-700/60 animate-in fade-in">
+          <CheckCircle2 className="w-5 h-5 text-gold-400 shrink-0" />
           <span>{success}</span>
         </div>
       )}
@@ -135,10 +145,12 @@ export default function SettingsPage() {
       <form onSubmit={handleSave} className="space-y-6">
         
         {/* Jamia Organization Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-          <h3 className="font-bold text-sm text-slate-800 pb-2 border-b flex items-center gap-2">
-            <Building className="w-4 h-4 text-emerald-600" />
-            <span>جامعہ اور لانڈری کے بنیادی کوائف (Organization Info)</span>
+        <div className="bg-white rounded-3xl shadow-subtle border border-slate-200/80 p-6 sm:p-7 space-y-4">
+          <h3 className="font-bold text-sm text-jamia-950 pb-3 border-b border-slate-100 flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+              <Building className="w-4 h-4" />
+            </div>
+            <span>جامعہ اور لانڈری کے بنیادی کوائف (Organization Profile)</span>
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -149,7 +161,7 @@ export default function SettingsPage() {
                 required
                 value={form.jamia_name}
                 onChange={e => setForm({ ...form, jamia_name: e.target.value })}
-                className="w-full p-2 border rounded-lg font-bold text-slate-900"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold text-slate-900 urdu-compact focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
             <div>
@@ -159,7 +171,7 @@ export default function SettingsPage() {
                 required
                 value={form.jamia_name_en}
                 onChange={e => setForm({ ...form, jamia_name_en: e.target.value })}
-                className="w-full p-2 border rounded-lg font-bold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
             <div>
@@ -169,7 +181,7 @@ export default function SettingsPage() {
                 required
                 value={form.laundry_name}
                 onChange={e => setForm({ ...form, laundry_name: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl urdu-compact focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
             <div>
@@ -179,31 +191,33 @@ export default function SettingsPage() {
                 required
                 value={form.phone}
                 onChange={e => setForm({ ...form, phone: e.target.value })}
-                className="w-full p-2 border rounded-lg font-mono"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block font-semibold text-slate-700 mb-1">مکمل پتہ و مقام (Campus Address) *</label>
+              <label className="block font-semibold text-slate-700 mb-1">مکمل پتہ و کیمپس کا مقام *</label>
               <input
                 type="text"
                 required
                 value={form.address}
                 onChange={e => setForm({ ...form, address: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl urdu-compact focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
           </div>
         </div>
 
         {/* Sarkari Collection Days & Turnaround */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-          <h3 className="font-bold text-sm text-slate-800 pb-2 border-b flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-600" />
+        <div className="bg-white rounded-3xl shadow-subtle border border-slate-200/80 p-6 sm:p-7 space-y-4">
+          <h3 className="font-bold text-sm text-jamia-950 pb-3 border-b border-slate-100 flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+              <Calendar className="w-4 h-4" />
+            </div>
             <span>سرکاری کلیکشن کے مقررہ دن اور متوقع واپسی (Schedule & Turnaround)</span>
           </h3>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-2.5">
               سرکاری کپڑوں کی وصولی کے ایام (SAR-04: ڈیفالٹ منگل اور جمعہ):
             </label>
             <div className="flex flex-wrap gap-2 text-xs">
@@ -214,10 +228,10 @@ export default function SettingsPage() {
                     type="button"
                     key={d.num}
                     onClick={() => toggleCollectionDay(d.num)}
-                    className={`px-3 py-1.5 rounded-lg border font-semibold transition ${
+                    className={`px-3.5 py-2 rounded-xl font-bold transition-all ${
                       isSelected
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                        : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
+                        ? 'bg-jamia-900 text-gold-300 shadow-sm border border-emerald-800'
+                        : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     {d.ur} {isSelected && '✓'}
@@ -238,9 +252,9 @@ export default function SettingsPage() {
                 max="14"
                 value={form.sarkari_turnaround_days}
                 onChange={e => setForm({ ...form, sarkari_turnaround_days: Number(e.target.value) })}
-                className="w-full p-2 border rounded-lg font-bold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold font-mono focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
-              <span className="text-[11px] text-slate-500">مثلاً: 2 دن بعد</span>
+              <span className="text-[11px] text-slate-500 mt-1 block">مثلاً: 2 دن بعد واپسی</span>
             </div>
 
             <div>
@@ -253,17 +267,19 @@ export default function SettingsPage() {
                 max="14"
                 value={form.private_turnaround_days}
                 onChange={e => setForm({ ...form, private_turnaround_days: Number(e.target.value) })}
-                className="w-full p-2 border rounded-lg font-bold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold font-mono focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
-              <span className="text-[11px] text-slate-500">مثلاً: 1 دن بعد</span>
+              <span className="text-[11px] text-slate-500 mt-1 block">مثلاً: 1 دن بعد واپسی</span>
             </div>
           </div>
         </div>
 
         {/* Thermal Printer & Receipt Layout */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-          <h3 className="font-bold text-sm text-slate-800 pb-2 border-b flex items-center gap-2">
-            <Printer className="w-4 h-4 text-emerald-600" />
+        <div className="bg-white rounded-3xl shadow-subtle border border-slate-200/80 p-6 sm:p-7 space-y-4">
+          <h3 className="font-bold text-sm text-jamia-950 pb-3 border-b border-slate-100 flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+              <Printer className="w-4 h-4" />
+            </div>
             <span>تھرمل منی پرنٹر اور رسید کا فارمیٹ (Thermal Printer Settings)</span>
           </h3>
 
@@ -273,10 +289,10 @@ export default function SettingsPage() {
               <select
                 value={form.paper_width}
                 onChange={e => setForm({ ...form, paper_width: e.target.value as any })}
-                className="w-full p-2 border rounded-lg font-bold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               >
-                <option value="80mm">80 mm (معیاری تھرمل رول)</option>
-                <option value="58mm">58 mm (منی پورٹیبل تھرمل رول)</option>
+                <option value="80mm">80 mm (معیاری تھرمل رول - ڈیسک ٹاپ)</option>
+                <option value="58mm">58 mm (منی پورٹیبل تھرمل رول - بلوٹوتھ)</option>
               </select>
             </div>
 
@@ -285,22 +301,22 @@ export default function SettingsPage() {
               <select
                 value={form.print_copies}
                 onChange={e => setForm({ ...form, print_copies: Number(e.target.value) as any })}
-                className="w-full p-2 border rounded-lg font-bold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-bold focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               >
                 <option value={1}>1 کاپی (طالب علم کے لیے)</option>
                 <option value={2}>2 کاپیاں (طالب علم + لانڈری بیگ ٹیگ)</option>
               </select>
             </div>
 
-            <div className="flex items-center gap-2 pt-5">
+            <div className="flex items-center gap-2 pt-6">
               <input
                 type="checkbox"
                 id="printBarcode"
                 checked={form.print_barcode}
                 onChange={e => setForm({ ...form, print_barcode: e.target.checked })}
-                className="w-4 h-4 text-emerald-600 rounded"
+                className="w-4 h-4 text-jamia-800 rounded border-slate-300 focus:ring-jamia-600"
               />
-              <label htmlFor="printBarcode" className="font-bold text-slate-800">
+              <label htmlFor="printBarcode" className="font-bold text-slate-900 cursor-pointer">
                 رسید پر کیو آر / بارکوڈ پرنٹ کریں
               </label>
             </div>
@@ -308,82 +324,84 @@ export default function SettingsPage() {
 
           <div className="text-xs space-y-3 pt-2">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">رسید ہیڈر کا متن (Receipt Header Text):</label>
+              <label className="block font-semibold text-slate-700 mb-1">رسید ہیڈر کا متن (Header Text):</label>
               <input
                 type="text"
                 value={form.receipt_header}
                 onChange={e => setForm({ ...form, receipt_header: e.target.value })}
-                className="w-full p-2 border rounded-lg font-semibold"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl font-semibold focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">رسید فوٹر / شرائط و ضوابط (Footer / Terms):</label>
+              <label className="block font-semibold text-slate-700 mb-1">رسید فوٹر / شرائط و ضوابط (Footer Terms):</label>
               <textarea
                 rows={2}
                 value={form.receipt_footer}
                 onChange={e => setForm({ ...form, receipt_footer: e.target.value })}
-                className="w-full p-2 border rounded-lg urdu-compact"
+                className="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl urdu-compact focus:ring-2 focus:ring-jamia-600 focus:outline-none"
               />
             </div>
           </div>
         </div>
 
-        {/* Submit */}
+        {/* Submit Button */}
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={saving}
-            className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-lg text-sm shadow flex items-center gap-2"
+            className="bg-gradient-to-r from-jamia-900 to-jamia-800 hover:from-jamia-850 hover:to-jamia-750 text-gold-300 font-bold px-7 py-3 rounded-2xl text-xs shadow-md flex items-center gap-2.5 transition border border-emerald-800"
           >
-            <Save className="w-4 h-4" />
-            <span>{saving ? 'محفوظ ہو رہا ہے...' : 'ترتیبات محفوظ کریں'}</span>
+            <Save className="w-4 h-4 text-gold-400" />
+            <span>{saving ? 'محفوظ ہو رہا ہے...' : 'تمام ترتیبات محفوظ کریں'}</span>
           </button>
         </div>
       </form>
 
-      {/* Backup and Restore Box (NFR-05) */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-        <h3 className="font-bold text-sm text-slate-800 pb-2 border-b flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span>ڈیٹا بیس بیک اپ اور ری اسٹور (Backup & Restore - NFR-05)</span>
+      {/* Backup and Restore Box */}
+      <div className="bg-white rounded-3xl shadow-subtle border border-slate-200/80 p-6 sm:p-7 space-y-4">
+        <h3 className="font-bold text-sm text-jamia-950 pb-3 border-b border-slate-100 flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+            <ShieldCheck className="w-4 h-4" />
+          </div>
+          <span>ڈیٹا بیس کلاؤڈ بیک اپ اور بحالی (Backup & Restore - NFR-05)</span>
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
           {/* Backup Download */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
             <div>
               <div className="font-bold text-slate-900 mb-1">مکمل ڈیٹا بیس بیک اپ ڈاؤن لوڈ کریں</div>
-              <p className="text-slate-500 mb-4">
-                تمام طلبہ، رسیدات، ریٹ لسٹ اور آڈٹ لاگ کو سنگل محفوظ JSON فائل میں محفوظ کریں۔
+              <p className="text-slate-500 mb-4 leading-relaxed">
+                تمام طلبہ، رسیدات، ریٹ لسٹ اور آڈٹ لاگز کو سنگل خودکار بیک اپ JSON فائل کے طور پر محفوظ رکھیں۔
               </p>
             </div>
             <button
               onClick={handleDownloadBackup}
-              className="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 shadow"
+              className="bg-jamia-900 hover:bg-jamia-800 text-gold-300 font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow transition border border-emerald-800"
             >
-              <Download className="w-4 h-4 text-emerald-400" />
+              <Download className="w-4 h-4 text-gold-400" />
               <span>فوری بیک اپ ڈاؤن لوڈ کریں (Backup Now)</span>
             </button>
           </div>
 
           {/* Restore */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
             <div>
-              <div className="font-bold text-slate-900 mb-1">بیک اپ فائل سے بحال کریں (Restore)</div>
-              <p className="text-slate-500 mb-3">
+              <div className="font-bold text-slate-900 mb-1">سابقہ بیک اپ فائل سے بحال کریں (Restore)</div>
+              <p className="text-slate-500 mb-3 leading-relaxed">
                 سابقہ بیک اپ فائل (.json) منتخب کر کے نظام کا ڈیٹا بحال کریں۔
               </p>
               <input
                 type="file"
                 accept=".json"
                 onChange={e => setRestoreFile(e.target.files?.[0] || null)}
-                className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-white file:text-slate-700 border rounded p-1 bg-white mb-3"
+                className="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-white file:text-slate-700 border border-slate-200 rounded-xl p-1.5 bg-white mb-3"
               />
             </div>
             <button
               onClick={handleRestoreBackup}
               disabled={!restoreFile || restoring}
-              className="bg-red-700 hover:bg-red-600 disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 shadow"
+              className="bg-rose-700 hover:bg-rose-600 disabled:opacity-50 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow transition"
             >
               <Upload className="w-4 h-4" />
               <span>{restoring ? 'بحالی جاری ہے...' : 'ڈیٹا بیس بحال کریں (Restore Now)'}</span>

@@ -110,48 +110,48 @@ export default function ReceiptsPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-3xl shadow-jamia border border-slate-200/80">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold shadow-md">
             <ReceiptText className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900 urdu-compact">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 font-nastaliq leading-snug">
               تمام جاری شدہ رسیدات (All Receipts)
             </h1>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 font-normal">
               دوبارہ پرنٹ (Duplicate) اور ایڈمن منسوخی کنٹرول
             </p>
           </div>
         </div>
 
         {/* Search */}
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-full sm:w-72">
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="رسید نمبر یا طالب علم..."
-            className="w-full text-xs pl-3 pr-8 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            placeholder="رسید نمبر یا طالب علم سے تلاش کریں..."
+            className="w-full text-xs pl-3.5 pr-9 py-2.5 rounded-2xl border border-slate-300 focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 font-medium"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-3 text-xs items-center">
-        <span className="font-bold text-slate-600 flex items-center gap-1">
-          <Filter className="w-3.5 h-3.5" />
+      <div className="bg-white p-4 rounded-3xl shadow-jamia border border-slate-200/80 flex flex-wrap gap-3 text-xs items-center">
+        <span className="font-bold text-slate-700 flex items-center gap-1.5 pl-1">
+          <Filter className="w-4 h-4 text-emerald-600" />
           <span>فلٹرز:</span>
         </span>
 
         <select
           value={filterType}
           onChange={e => setFilterType(e.target.value)}
-          className="border border-slate-300 rounded px-2.5 py-1 text-slate-700 bg-white"
+          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
         >
           <option value="All">تمام اقسام (Sarkari & Private)</option>
           <option value="Sarkari">صرف سرکاری (Sarkari)</option>
@@ -161,7 +161,7 @@ export default function ReceiptsPage() {
         <select
           value={filterStatus}
           onChange={e => setFilterStatus(e.target.value)}
-          className="border border-slate-300 rounded px-2.5 py-1 text-slate-700 bg-white"
+          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
         >
           <option value="All">تمام حالتیں (All Statuses)</option>
           <option value="Received">موصول شدہ (Received)</option>
@@ -174,83 +174,87 @@ export default function ReceiptsPage() {
         <select
           value={filterPayment}
           onChange={e => setFilterPayment(e.target.value)}
-          className="border border-slate-300 rounded px-2.5 py-1 text-slate-700 bg-white"
+          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
         >
-          <option value="All">ادائیگی: سب</option>
+          <option value="All">ادائیگی: تمام</option>
           <option value="Paid">ادا شدہ (Paid)</option>
           <option value="Unpaid">واجب الادا (Unpaid)</option>
         </select>
+
+        <span className="text-slate-400 text-xs mr-auto font-mono">
+          رسیدات: {filtered.length}
+        </span>
       </div>
 
       {/* Receipts Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-jamia border border-slate-200/80 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-right">
-            <thead className="bg-slate-100 text-slate-700 font-bold border-b">
+            <thead className="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">
               <tr>
-                <th className="p-3">رسید نمبر</th>
-                <th className="p-3">قسم</th>
-                <th className="p-3">طالب علم</th>
-                <th className="p-3">کلاس / رہائش</th>
-                <th className="p-3 text-center">کپڑے</th>
-                <th className="p-3 text-left">بل (روپے)</th>
-                <th className="p-3 text-center">ادائیگی</th>
-                <th className="p-3 text-center">حالت</th>
-                <th className="p-3">تاریخ و وقت</th>
+                <th className="p-3.5">رسید نمبر</th>
+                <th className="p-3.5">قسم</th>
+                <th className="p-3.5">طالب علم</th>
+                <th className="p-3.5">کلاس / رہائش</th>
+                <th className="p-3.5 text-center">کپڑے</th>
+                <th className="p-3.5 text-left">بل (روپے)</th>
+                <th className="p-3.5 text-center">ادائیگی</th>
+                <th className="p-3.5 text-center">حالت</th>
+                <th className="p-3.5">تاریخ و وقت</th>
                 <th className="p-3">آپریٹر</th>
-                <th className="p-3 text-center">ایکشن</th>
+                <th className="p-3.5 text-center">ایکشن</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={11} className="p-6 text-center text-slate-500">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={11} className="p-8 text-center text-slate-500 font-medium">لوڈ ہو رہا ہے...</td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="p-6 text-center text-slate-500">کوئی رسید موجود نہیں ہے</td>
+                  <td colSpan={11} className="p-8 text-center text-slate-500 font-medium font-nastaliq">کوئی رسید موجود نہیں ہے</td>
                 </tr>
               ) : (
                 filtered.map(rcp => (
-                  <tr key={rcp.id} className={`hover:bg-slate-50/80 ${rcp.status === 'Cancelled' ? 'bg-red-50/40 text-slate-400' : ''}`}>
-                    <td className="p-3 font-bold text-slate-900 flex items-center gap-1.5">
+                  <tr key={rcp.id} className={`hover:bg-slate-50/80 transition ${rcp.status === 'Cancelled' ? 'bg-red-50/30 text-slate-400' : ''}`}>
+                    <td className="p-3.5 font-bold font-mono text-slate-900 flex items-center gap-1.5">
                       <span>{rcp.receipt_no}</span>
                       {rcp.reprint_count > 0 && (
-                        <span className="text-[9px] bg-red-100 text-red-700 px-1 rounded font-semibold">
+                        <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.2 rounded font-bold font-mono">
                           #{rcp.reprint_count}
                         </span>
                       )}
                     </td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                    <td className="p-3.5">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                         rcp.type === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                       }`}>
                         {rcp.type === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
                       </span>
                     </td>
-                    <td className="p-3 font-semibold text-slate-900 urdu-compact">
-                      <div>{rcp.student_name}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">Reg: {rcp.student_reg_no}</div>
+                    <td className="p-3.5">
+                      <div className="font-bold text-slate-900 font-nastaliq text-sm leading-snug">{rcp.student_name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">Reg: {rcp.student_reg_no}</div>
                     </td>
-                    <td className="p-3 text-slate-600">
-                      <div>{rcp.class_name}</div>
-                      <div className="text-[10px] text-slate-500 truncate max-w-[140px]">{rcp.iqamat}</div>
+                    <td className="p-3.5 text-slate-600">
+                      <div className="font-medium text-slate-800">{rcp.class_name}</div>
+                      <div className="text-[10px] text-slate-400 truncate max-w-[140px]">{rcp.iqamat}</div>
                     </td>
-                    <td className="p-3 text-center font-bold text-slate-800 text-sm">
+                    <td className="p-3.5 text-center font-bold text-slate-900 text-sm font-mono">
                       {rcp.total_pieces} عدد
                     </td>
-                    <td className="p-3 text-left font-bold text-slate-900 text-sm">
+                    <td className="p-3.5 text-left font-black text-slate-900 text-sm font-mono">
                       {rcp.type === 'Private' ? `Rs ${rcp.total_amount}` : 'Rs 0'}
                     </td>
-                    <td className="p-3 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    <td className="p-3.5 text-center">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                         rcp.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
                       }`}>
                         {rcp.payment_status === 'Paid' ? 'ادا شدہ' : 'واجب الادا'}
                       </span>
                     </td>
-                    <td className="p-3 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                    <td className="p-3.5 text-center">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
                         rcp.status === 'Delivered'
                           ? 'bg-emerald-600 text-white'
                           : rcp.status === 'Ready'
@@ -262,21 +266,21 @@ export default function ReceiptsPage() {
                         {rcp.status}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-600 text-[11px]">
+                    <td className="p-3.5 text-slate-600 text-[11px] font-mono">
                       <div>{new Date(rcp.date_time).toLocaleDateString()}</div>
                       <div className="text-[10px] text-slate-400">{new Date(rcp.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                     </td>
-                    <td className="p-3 text-slate-600 text-[11px] truncate max-w-[100px]">
+                    <td className="p-3.5 text-slate-600 text-[11px] truncate max-w-[100px] font-nastaliq">
                       {rcp.operator_name}
                     </td>
-                    <td className="p-3 text-center">
+                    <td className="p-3.5 text-center">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => {
                             setSelectedReceipt(rcp);
                             setIsDuplicatePrint(false);
                           }}
-                          className="p-1 rounded text-slate-600 hover:text-emerald-600 hover:bg-slate-100"
+                          className="p-1.5 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition"
                           title="رسید دیکھیں"
                         >
                           <Eye className="w-4 h-4" />
@@ -284,7 +288,7 @@ export default function ReceiptsPage() {
 
                         <button
                           onClick={() => handleReprint(rcp)}
-                          className="p-1 rounded text-slate-600 hover:text-blue-600 hover:bg-slate-100"
+                          className="p-1.5 rounded-xl text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition"
                           title="دوبارہ پرنٹ نکالیں (Duplicate)"
                         >
                           <Printer className="w-4 h-4" />
@@ -293,7 +297,7 @@ export default function ReceiptsPage() {
                         {user?.role === 'Administrator' && rcp.status !== 'Cancelled' && (
                           <button
                             onClick={() => setCancellingReceipt(rcp)}
-                            className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50"
+                            className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
                             title="رسید منسوخ کریں (Cancel)"
                           >
                             <Ban className="w-4 h-4" />
