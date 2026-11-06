@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,100 +10,80 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #f8fafc;
+  color: #0f172a;
+  background-color: #f8fafc;
   min-height: 100vh;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  letter-spacing: -0.01em;
+  font-family: 'Noto Sans Arabic', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Authentic Madrasa Typography */
-.font-nastaliq {
-  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Amiri', serif;
-  line-height: 2.1;
-}
-
-.urdu-compact {
-  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Amiri', serif;
-  line-height: 1.7;
-}
-
+/* Modern, Clean Arabic/Urdu Typography with tight professional line heights */
+.font-nastaliq,
+.urdu-compact,
 .font-arabic {
-  font-family: 'Noto Sans Arabic', 'Amiri', sans-serif;
-}
-
-/* Subtle Madrasa Geometric Pattern */
-.bg-madrasa-pattern {
-  background-color: #064e3b;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-
-.bg-cream {
-  background-color: #fbfbf9;
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+  line-height: 1.45;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 9999px;
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Thermal Mini Receipt Printer CSS */
+/* Clean Professional Table Style */
+.table-compact th {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-compact td {
+  padding: 9px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Thermal Mini Receipt Print Styles */
 @media print {
   body * {
     visibility: hidden;
   }
-  
-  .thermal-receipt-printable, .thermal-receipt-printable * {
+  .receipt-printable, .receipt-printable * {
     visibility: visible;
   }
-  
-  .thermal-receipt-printable {
+  .receipt-printable {
     position: absolute;
     left: 0;
     top: 0;
-    width: 80mm !important;
-    margin: 0 !important;
-    padding: 3mm !important;
-    background: white !important;
-    color: black !important;
-    font-size: 11px !important;
-    line-height: 1.3 !important;
-    box-shadow: none !important;
-    border: none !important;
+    width: 80mm;
+    margin: 0;
+    padding: 0;
+    background: white;
+    color: black;
+    box-shadow: none;
+    border: none;
   }
-
-  .thermal-receipt-printable.width-58mm {
-    width: 58mm !important;
-    font-size: 9.5px !important;
-  }
-
-  /* For A4 reports print */
-  .a4-report-printable, .a4-report-printable * {
-    visibility: visible;
-  }
-  
-  .a4-report-printable {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 10mm !important;
-    background: white !important;
-    color: black !important;
-    box-shadow: none !important;
-    border: none !important;
+  @page {
+    size: 80mm auto;
+    margin: 0;
   }
 }

@@ -10,10 +10,6 @@ import {
   Ban,
   Search,
   Filter,
-  Eye,
-  CheckCircle2,
-  Clock,
-  ShieldAlert,
 } from 'lucide-react';
 
 export default function ReceiptsPage() {
@@ -110,197 +106,175 @@ export default function ReceiptsPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="space-y-4">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-3xl shadow-jamia border border-slate-200/80">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold shadow-md">
-            <ReceiptText className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 font-nastaliq leading-snug">
-              تمام جاری شدہ رسیدات (All Receipts)
-            </h1>
-            <p className="text-xs text-slate-500 font-normal">
-              دوبارہ پرنٹ (Duplicate) اور ایڈمن منسوخی کنٹرول
-            </p>
-          </div>
+      {/* Header & Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+        <div>
+          <h1 className="text-base font-bold text-slate-900">تمام جاری شدہ رسیدات (Receipts Directory)</h1>
+          <p className="text-[11px] text-slate-500">
+            تمام سرکاری اور پرائیویٹ رسیدات کی تفصیل، دوبارہ پرنٹ اور منسوخی
+          </p>
         </div>
 
-        {/* Search */}
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-64">
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="رسید نمبر یا طالب علم سے تلاش کریں..."
-            className="w-full text-xs pl-3.5 pr-9 py-2.5 rounded-2xl border border-slate-300 focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 font-medium"
+            placeholder="رسید نمبر یا طالب علم..."
+            className="w-full text-xs pl-3 pr-8 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white p-4 rounded-3xl shadow-jamia border border-slate-200/80 flex flex-wrap gap-3 text-xs items-center">
-        <span className="font-bold text-slate-700 flex items-center gap-1.5 pl-1">
-          <Filter className="w-4 h-4 text-emerald-600" />
-          <span>فلٹرز:</span>
-        </span>
+      <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-2 text-xs items-center justify-between">
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex items-center gap-1 text-slate-500 font-medium text-[11px]">
+            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <span>فلٹر:</span>
+          </div>
 
-        <select
-          value={filterType}
-          onChange={e => setFilterType(e.target.value)}
-          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
-        >
-          <option value="All">تمام اقسام (Sarkari & Private)</option>
-          <option value="Sarkari">صرف سرکاری (Sarkari)</option>
-          <option value="Private">صرف پرائیویٹ (Private)</option>
-        </select>
+          <select
+            value={filterType}
+            onChange={e => setFilterType(e.target.value)}
+            className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
+          >
+            <option value="All">تمام اقسام (All)</option>
+            <option value="Sarkari">صرف سرکاری (Sarkari)</option>
+            <option value="Private">صرف پرائیویٹ (Private)</option>
+          </select>
 
-        <select
-          value={filterStatus}
-          onChange={e => setFilterStatus(e.target.value)}
-          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
-        >
-          <option value="All">تمام حالتیں (All Statuses)</option>
-          <option value="Received">موصول شدہ (Received)</option>
-          <option value="In Process">زیر دھلائی (In Process)</option>
-          <option value="Ready">تیار برائے واپسی (Ready)</option>
-          <option value="Delivered">واپس شدہ (Delivered)</option>
-          <option value="Cancelled">منسوخ شدہ (Cancelled)</option>
-        </select>
+          <select
+            value={filterStatus}
+            onChange={e => setFilterStatus(e.target.value)}
+            className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
+          >
+            <option value="All">تمام حالتیں (All)</option>
+            <option value="Received">موصول شدہ</option>
+            <option value="In Process">زیر دھلائی</option>
+            <option value="Ready">تیار</option>
+            <option value="Delivered">واپس شدہ</option>
+            <option value="Cancelled">منسوخ شدہ</option>
+          </select>
 
-        <select
-          value={filterPayment}
-          onChange={e => setFilterPayment(e.target.value)}
-          className="border border-slate-300 rounded-xl px-3 py-2 text-slate-700 bg-white font-medium focus:outline-none focus:border-emerald-600"
-        >
-          <option value="All">ادائیگی: تمام</option>
-          <option value="Paid">ادا شدہ (Paid)</option>
-          <option value="Unpaid">واجب الادا (Unpaid)</option>
-        </select>
+          <select
+            value={filterPayment}
+            onChange={e => setFilterPayment(e.target.value)}
+            className="border border-slate-200 rounded-md px-2 py-1 text-slate-700 bg-slate-50 text-xs font-medium focus:outline-none"
+          >
+            <option value="All">ادائیگی: تمام</option>
+            <option value="Paid">ادا شدہ</option>
+            <option value="Unpaid">واجب الادا</option>
+          </select>
+        </div>
 
-        <span className="text-slate-400 text-xs mr-auto font-mono">
-          رسیدات: {filtered.length}
+        <span className="text-slate-400 text-[11px] font-mono">
+          کل رسیدات: {filtered.length}
         </span>
       </div>
 
       {/* Receipts Table */}
-      <div className="bg-white rounded-3xl shadow-jamia border border-slate-200/80 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-right">
-            <thead className="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">
+            <thead className="bg-slate-50 text-[11px] text-slate-500 font-semibold border-b border-slate-200">
               <tr>
-                <th className="p-3.5">رسید نمبر</th>
-                <th className="p-3.5">قسم</th>
-                <th className="p-3.5">طالب علم</th>
-                <th className="p-3.5">کلاس / رہائش</th>
-                <th className="p-3.5 text-center">کپڑے</th>
-                <th className="p-3.5 text-left">بل (روپے)</th>
-                <th className="p-3.5 text-center">ادائیگی</th>
-                <th className="p-3.5 text-center">حالت</th>
-                <th className="p-3.5">تاریخ و وقت</th>
-                <th className="p-3">آپریٹر</th>
-                <th className="p-3.5 text-center">ایکشن</th>
+                <th className="p-2.5">رسید نمبر</th>
+                <th className="p-2.5">قسم</th>
+                <th className="p-2.5">طالب علم</th>
+                <th className="p-2.5">کلاس / ہاسٹل</th>
+                <th className="p-2.5 text-center">کپڑے</th>
+                <th className="p-2.5 text-left">بل</th>
+                <th className="p-2.5 text-center">ادائیگی</th>
+                <th className="p-2.5 text-center">حالت</th>
+                <th className="p-2.5">تاریخ</th>
+                <th className="p-2.5 text-center">ایکشن</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={11} className="p-8 text-center text-slate-500 font-medium">لوڈ ہو رہا ہے...</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">لوڈ ہو رہا ہے...</td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="p-8 text-center text-slate-500 font-medium font-nastaliq">کوئی رسید موجود نہیں ہے</td>
+                  <td colSpan={10} className="p-8 text-center text-slate-400">کوئی رسید نہیں ملی</td>
                 </tr>
               ) : (
                 filtered.map(rcp => (
-                  <tr key={rcp.id} className={`hover:bg-slate-50/80 transition ${rcp.status === 'Cancelled' ? 'bg-red-50/30 text-slate-400' : ''}`}>
-                    <td className="p-3.5 font-bold font-mono text-slate-900 flex items-center gap-1.5">
+                  <tr key={rcp.id} className={`hover:bg-slate-50/80 transition ${rcp.status === 'Cancelled' ? 'bg-slate-50/50 text-slate-400' : ''}`}>
+                    <td className="p-2.5 font-mono font-bold text-slate-900">
                       <span>{rcp.receipt_no}</span>
                       {rcp.reprint_count > 0 && (
-                        <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.2 rounded font-bold font-mono">
+                        <span className="mr-1 text-[9px] bg-amber-100 text-amber-800 px-1 py-0.2 rounded font-mono">
                           #{rcp.reprint_count}
                         </span>
                       )}
                     </td>
-                    <td className="p-3.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                        rcp.type === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                    <td className="p-2.5">
+                      <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                        rcp.type === 'Sarkari' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
                       }`}>
                         {rcp.type === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
                       </span>
                     </td>
-                    <td className="p-3.5">
-                      <div className="font-bold text-slate-900 font-nastaliq text-sm leading-snug">{rcp.student_name}</div>
-                      <div className="text-[10px] text-slate-400 font-mono">Reg: {rcp.student_reg_no}</div>
+                    <td className="p-2.5">
+                      <div className="font-medium text-slate-900">{rcp.student_name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{rcp.student_reg_no}</div>
                     </td>
-                    <td className="p-3.5 text-slate-600">
-                      <div className="font-medium text-slate-800">{rcp.class_name}</div>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[140px]">{rcp.iqamat}</div>
+                    <td className="p-2.5 text-slate-600">
+                      <div>{rcp.class_name}</div>
+                      <div className="text-[10px] text-slate-400">{rcp.iqamat}</div>
                     </td>
-                    <td className="p-3.5 text-center font-bold text-slate-900 text-sm font-mono">
-                      {rcp.total_pieces} عدد
+                    <td className="p-2.5 text-center font-mono font-bold text-slate-900">
+                      {rcp.total_pieces}
                     </td>
-                    <td className="p-3.5 text-left font-black text-slate-900 text-sm font-mono">
-                      {rcp.type === 'Private' ? `Rs ${rcp.total_amount}` : 'Rs 0'}
+                    <td className="p-2.5 text-left font-mono font-bold text-slate-900">
+                      {rcp.type === 'Private' ? `Rs ${rcp.total_amount}` : 'مفت'}
                     </td>
-                    <td className="p-3.5 text-center">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        rcp.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                    <td className="p-2.5 text-center">
+                      <span className={`px-2 py-0.2 rounded text-[10px] font-medium ${
+                        rcp.payment_status === 'Paid'
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : 'bg-rose-50 text-rose-700'
                       }`}>
-                        {rcp.payment_status === 'Paid' ? 'ادا شدہ' : 'واجب الادا'}
+                        {rcp.payment_status === 'Paid' ? 'ادا شدہ' : 'بقایا'}
                       </span>
                     </td>
-                    <td className="p-3.5 text-center">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                    <td className="p-2.5 text-center">
+                      <span className={`px-2 py-0.2 rounded text-[10px] font-medium ${
                         rcp.status === 'Delivered'
-                          ? 'bg-emerald-600 text-white'
-                          : rcp.status === 'Ready'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-emerald-50 text-emerald-700'
                           : rcp.status === 'Cancelled'
-                          ? 'bg-red-600 text-white'
-                          : 'bg-slate-200 text-slate-800'
+                          ? 'bg-rose-50 text-rose-600'
+                          : 'bg-slate-100 text-slate-700'
                       }`}>
-                        {rcp.status}
+                        {rcp.status === 'Delivered' ? 'واپس شدہ' : rcp.status === 'Cancelled' ? 'منسوخ' : rcp.status}
                       </span>
                     </td>
-                    <td className="p-3.5 text-slate-600 text-[11px] font-mono">
-                      <div>{new Date(rcp.date_time).toLocaleDateString()}</div>
-                      <div className="text-[10px] text-slate-400">{new Date(rcp.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    <td className="p-2.5 text-slate-500 font-mono text-[11px]">
+                      {new Date(rcp.date_time).toLocaleDateString()}
                     </td>
-                    <td className="p-3.5 text-slate-600 text-[11px] truncate max-w-[100px] font-nastaliq">
-                      {rcp.operator_name}
-                    </td>
-                    <td className="p-3.5 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <button
-                          onClick={() => {
-                            setSelectedReceipt(rcp);
-                            setIsDuplicatePrint(false);
-                          }}
-                          className="p-1.5 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition"
-                          title="رسید دیکھیں"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-
+                    <td className="p-2.5 text-center">
+                      <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleReprint(rcp)}
-                          className="p-1.5 rounded-xl text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition"
-                          title="دوبارہ پرنٹ نکالیں (Duplicate)"
+                          className="p-1 rounded text-slate-500 hover:text-emerald-600 hover:bg-slate-100 transition"
+                          title="پرنٹ کریں"
                         >
-                          <Printer className="w-4 h-4" />
+                          <Printer className="w-3.5 h-3.5" />
                         </button>
 
                         {user?.role === 'Administrator' && rcp.status !== 'Cancelled' && (
                           <button
                             onClick={() => setCancellingReceipt(rcp)}
-                            className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                            title="رسید منسوخ کریں (Cancel)"
+                            className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-100 transition"
+                            title="منسوخ کریں"
                           >
-                            <Ban className="w-4 h-4" />
+                            <Ban className="w-3.5 h-3.5" />
                           </button>
                         )}
                       </div>
@@ -313,60 +287,55 @@ export default function ReceiptsPage() {
         </div>
       </div>
 
-      {/* Admin Cancel Receipt Modal (EDT-02) */}
+      {/* Cancel Modal */}
       {cancellingReceipt && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-5 border border-slate-200">
-            <div className="flex items-center gap-2 text-red-600 mb-3">
-              <ShieldAlert className="w-6 h-6" />
-              <h3 className="font-bold text-base text-slate-900">
-                رسید منسوخ کریں ({cancellingReceipt.receipt_no})
-              </h3>
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-4 border border-slate-200 text-xs space-y-3">
+            <div className="font-bold text-slate-900 text-sm">
+              رسید منسوخ کریں ({cancellingReceipt.receipt_no})
             </div>
-            <p className="text-xs text-slate-600 mb-3">
-              رسید مستقل طور پر ڈیلیٹ نہیں ہوگی بلکہ "منسوخ شدہ" (Cancelled) کے طور پر رپورٹ میں رہے گی، اور تمام آڈٹ ریکارڈ محفوظ کیا جائے گا۔ منسوخی کی وجہ درج کرنا لازمی ہے:
+            <p className="text-slate-600">
+              رسید منسوخ کرنے کی ٹھوس وجہ درج فرمائیں (آڈٹ لاگ میں محفوظ کی جائے گی):
             </p>
             <textarea
-              rows={3}
+              rows={2}
               value={cancelReason}
               onChange={e => setCancelReason(e.target.value)}
-              placeholder="منسوخی کی وجہ درج کریں (مثلاً: غلط اندراج، طالب علم نے کپڑے واپس لے لیے)..."
-              className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500 mb-4"
-              autoFocus
+              placeholder="منسوخی کی وجہ..."
+              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
             />
-            <div className="flex justify-end gap-2 text-xs">
+            <div className="flex justify-end gap-2">
               <button
-                type="button"
-                onClick={() => {
-                  setCancellingReceipt(null);
-                  setCancelReason('');
-                }}
-                className="px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-100"
+                onClick={() => setCancellingReceipt(null)}
+                className="px-3 py-1.5 border rounded-lg hover:bg-slate-50"
               >
-                بند کریں (Cancel)
+                کینسل
               </button>
               <button
-                type="button"
-                disabled={cancelLoading || !cancelReason.trim()}
+                disabled={!cancelReason.trim() || cancelLoading}
                 onClick={handleCancelReceipt}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-semibold"
+                className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-lg font-semibold"
               >
-                {cancelLoading ? 'منسوخ ہو رہی ہے...' : 'منسوخ کریں (Confirm Cancel)'}
+                {cancelLoading ? 'منسوخ ہو رہا ہے...' : 'منسوخ کریں'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Thermal Receipt Preview */}
+      {/* Thermal Receipt Modal */}
       {selectedReceipt && (
         <ThermalReceiptModal
           receipt={selectedReceipt}
           settings={settings}
           isDuplicate={isDuplicatePrint}
-          onClose={() => setSelectedReceipt(null)}
+          onClose={() => {
+            setSelectedReceipt(null);
+            setIsDuplicatePrint(false);
+          }}
         />
       )}
+
     </div>
   );
 }

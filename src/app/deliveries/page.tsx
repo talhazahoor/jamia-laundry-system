@@ -12,11 +12,7 @@ import {
   DollarSign,
   User,
   Clock,
-  Sparkles,
   ShieldAlert,
-  ArrowRight,
-  Check,
-  Building,
   Printer,
   Shirt,
 } from 'lucide-react';
@@ -31,8 +27,6 @@ export default function DeliveriesPage() {
   const [unpaidAlert, setUnpaidAlert] = useState(false);
   const [deliveryRemarks, setDeliveryRemarks] = useState('');
   const [delivering, setDelivering] = useState(false);
-
-  // Bulk Ready State
   const [bulkProcessing, setBulkProcessing] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +49,7 @@ export default function DeliveriesPage() {
       const res = await fetch(`/api/receipts/${encodeURIComponent(q)}`);
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'رسید کا ریکارڈ نہیں ملا (Receipt not found)');
+        throw new Error(data.error || 'رسید کا ریکارڈ نہیں ملا');
       }
 
       setReceipt(data.receipt);
@@ -95,7 +89,7 @@ export default function DeliveriesPage() {
         throw new Error(data.error || 'Failed to mark delivered');
       }
 
-      setSuccess(`رسید ${receipt.receipt_no} کے کپڑے طالب علم کو کامیابی سے حوالے کر دیے گئے! (Delivered)`);
+      setSuccess(`رسید #${receipt.receipt_no} کے کپڑے طالب علم کو حوالے کر دیے گئے`);
       setReceipt(data.receipt);
       setUnpaidAlert(false);
       setReceiptInput('');
@@ -108,7 +102,7 @@ export default function DeliveriesPage() {
   };
 
   const handleBulkMarkReady = async () => {
-    if (!confirm('کیا آپ آج کی تمام موصول شدہ سرکاری رسیدات کو "تیار" (Ready) نشان زد کرنا چاہتے ہیں؟')) {
+    if (!confirm('کیا آپ آج کی تمام سرکاری رسیدات کو "تیار" (Ready) نشان زد کرنا چاہتے ہیں؟')) {
       return;
     }
 
@@ -131,60 +125,54 @@ export default function DeliveriesPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4">
       
-      {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-3xl shadow-jamia border border-slate-200/80">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold shadow-md">
-            <PackageCheck className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 font-nastaliq leading-snug">
-              کپڑوں کی واپسی اور ترسیل (Clothes Return & Delivery)
-            </h1>
-            <p className="text-xs text-slate-500 font-normal">
-              بارکوڈ / کیو آر اسکین کریں یا رسید نمبر درج فرمائیں (DLV-01)
-            </p>
-          </div>
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+        <div>
+          <h1 className="text-base font-bold text-slate-900">کپڑوں کی واپسی و ترسیل (Deliveries & Returns)</h1>
+          <p className="text-[11px] text-slate-500">
+            بارکوڈ اسکین کریں یا رسید نمبر درج کر کے کپڑے حوالے کریں
+          </p>
         </div>
 
-        {/* Bulk Ready button (DLV-03) */}
         <button
           onClick={handleBulkMarkReady}
           disabled={bulkProcessing}
-          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-sm transition"
+          className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition"
         >
-          <Sparkles className="w-4 h-4 text-blue-200" />
-          <span>{bulkProcessing ? 'عمل جاری...' : 'آج کے تمام سرکاری کپڑے تیار (Mark Ready)'}</span>
+          {bulkProcessing ? 'اپ ڈیٹ ہو رہا ہے...' : 'تمام سرکاری کپڑے تیار نشان زد کریں'}
         </button>
       </div>
 
       {/* Notifications */}
       {success && (
-        <div className="bg-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-lg flex items-center justify-between text-xs font-semibold animate-fade-in border border-emerald-400/30">
-          <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-200 shrink-0" />
-            <span className="font-nastaliq">{success}</span>
+        <div className="bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs flex items-center justify-between font-medium">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+            <span>{success}</span>
           </div>
-          <button onClick={() => setSuccess(null)} className="text-emerald-100 hover:text-white p-1 rounded-lg">✕</button>
+          <button onClick={() => setSuccess(null)} className="text-white hover:opacity-75">✕</button>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl flex items-center gap-3 text-xs font-medium animate-fade-in">
-          <ShieldAlert className="w-5 h-5 text-red-500 shrink-0" />
+        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-lg flex items-center gap-2 text-xs font-medium">
+          <ShieldAlert className="w-4 h-4 text-rose-500 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Receipt Scan Input Hero */}
-      <div className="bg-white rounded-3xl shadow-jamia border border-slate-200/80 p-6 space-y-3">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
-          <span>رسید نمبر یا بارکوڈ اسکین (Scan Receipt / Barcode):</span>
-          <span className="text-[11px] text-slate-400 font-normal">مثال کے طور پر: <button onClick={() => lookupReceipt('S-000101')} className="underline font-mono text-emerald-700 font-bold">S-000101</button> یا <button onClick={() => lookupReceipt('P-000201')} className="underline font-mono text-emerald-700 font-bold">P-000201</button></span>
-        </label>
-        <div className="flex gap-2.5">
+      {/* Scanner Input Card */}
+      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+        <div className="flex justify-between items-center text-xs font-semibold text-slate-700">
+          <span>رسید نمبر یا بارکوڈ اسکین فرمائیں:</span>
+          <span className="text-[11px] text-slate-400 font-normal">
+            نمونہ: <button onClick={() => lookupReceipt('S-000101')} className="underline font-mono text-emerald-700">S-000101</button> یا <button onClick={() => lookupReceipt('P-000201')} className="underline font-mono text-emerald-700">P-000201</button>
+          </span>
+        </div>
+
+        <div className="flex gap-2">
           <div className="relative flex-1">
             <input
               ref={inputRef}
@@ -197,209 +185,151 @@ export default function DeliveriesPage() {
                   lookupReceipt();
                 }
               }}
-              placeholder="رسید نمبر درج کریں یا بارکوڈ اسکین کریں..."
-              className="w-full pl-4 pr-11 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-emerald-600 focus:outline-none text-base font-bold text-slate-900 shadow-inner font-mono"
+              placeholder="رسید نمبر درج کریں..."
+              className="w-full px-3 py-2 text-xs font-mono font-bold text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
               autoFocus
             />
-            <QrCode className="w-5 h-5 text-slate-400 absolute right-3.5 top-4 pointer-events-none" />
           </div>
           <button
             onClick={() => lookupReceipt()}
             disabled={loading}
-            className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold px-7 py-3.5 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2"
+            className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium px-4 py-2 rounded-lg text-xs transition"
           >
-            <Search className="w-4 h-4" />
-            <span>{loading ? 'تلاش...' : 'رسید تلاش کریں'}</span>
+            {loading ? 'تلاش...' : 'تلاش کریں'}
           </button>
         </div>
       </div>
 
-      {/* Verification & Delivery Card */}
+      {/* Receipt Verification Card */}
       {receipt && (
-        <div className="bg-white rounded-3xl shadow-jamia-lg border border-slate-200 overflow-hidden animate-fade-in">
-          {/* Top Banner */}
-          <div className={`p-5 text-white flex flex-wrap items-center justify-between gap-4 ${
-            receipt.status === 'Delivered'
-              ? 'bg-slate-800'
-              : receipt.type === 'Sarkari'
-              ? 'bg-gradient-to-r from-blue-700 to-indigo-800'
-              : 'bg-gradient-to-r from-amber-600 to-orange-700'
-          }`}>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-white/80 font-bold">
-                {receipt.type === 'Sarkari' ? 'سرکاری لانڈری رسید' : 'پرائیویٹ لانڈری رسید'}
-              </div>
-              <div className="text-2xl font-black font-mono mt-0.5">{receipt.receipt_no}</div>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+          
+          {/* Header of Receipt Card */}
+          <div className="bg-slate-50 p-3.5 border-b border-slate-200 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-mono font-bold text-sm text-slate-900">{receipt.receipt_no}</span>
+              <span className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                receipt.type === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {receipt.type === 'Sarkari' ? 'سرکاری' : 'پرائیویٹ'}
+              </span>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-0.5 rounded font-semibold text-[11px] ${
                 receipt.status === 'Delivered'
-                  ? 'bg-emerald-500 text-white'
-                  : receipt.status === 'Ready'
-                  ? 'bg-blue-500 text-white ring-2 ring-white/30'
-                  : 'bg-white/20 text-white'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-slate-200 text-slate-800'
               }`}>
-                حالت: {receipt.status}
+                {receipt.status === 'Delivered' ? 'واپس شدہ (Delivered)' : receipt.status}
               </span>
 
               {receipt.type === 'Private' && (
-                <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
+                <span className={`px-2 py-0.5 rounded font-bold text-[11px] ${
                   receipt.payment_status === 'Paid'
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-red-600 text-white animate-pulse'
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-rose-100 text-rose-800'
                 }`}>
-                  {receipt.payment_status === 'Paid' ? 'بل ادا شدہ' : 'بل غیر ادا شدہ (Rs ' + receipt.total_amount + ')'}
+                  {receipt.payment_status === 'Paid' ? 'ادا شدہ' : 'بقایا (Unpaid)'}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="p-6 space-y-5">
-            {/* Student Identity Verification Card (DLV-01) */}
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center sm:items-start gap-5">
-              <div className="w-24 h-24 rounded-2xl bg-white overflow-hidden ring-4 ring-emerald-500/20 shadow-md shrink-0 flex items-center justify-center">
-                {receipt.photo_url ? (
-                  <img src={receipt.photo_url} alt="Student" className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-12 h-12 text-slate-300" />
-                )}
+          <div className="p-4 space-y-4">
+            
+            {/* Student details */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <div>
+                <span className="text-[10px] text-slate-400 block">طالب علم:</span>
+                <span className="font-bold text-slate-900">{receipt.student_name}</span>
               </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1 text-xs w-full">
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">رجسٹریشن نمبر:</span>
-                  <span className="font-bold text-slate-900 text-base font-mono">{receipt.student_reg_no}</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">طالب علم کا نام:</span>
-                  <span className="font-bold text-slate-900 text-base font-nastaliq leading-tight">{receipt.student_name}</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">ولدیت:</span>
-                  <span className="font-semibold text-slate-800 font-nastaliq">{receipt.father_name}</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">کلاس و سیکشن:</span>
-                  <span className="font-medium text-slate-800">{receipt.class_name} ({receipt.section})</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">رہائش / اقامت:</span>
-                  <span className="font-medium text-slate-800 truncate block">{receipt.iqamat}</span>
-                </div>
-                <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                  <span className="text-slate-400 text-[10px] block font-bold">جمع کرانے کی تاریخ:</span>
-                  <span className="font-medium text-slate-700 font-mono">{new Date(receipt.date_time).toLocaleDateString()}</span>
-                </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block">رجسٹریشن:</span>
+                <span className="font-mono font-semibold">{receipt.student_reg_no}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block">کلاس و ہاسٹل:</span>
+                <span>{receipt.class_name} ({receipt.iqamat})</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block">جمع کرانے کی تاریخ:</span>
+                <span className="font-mono">{new Date(receipt.date_time).toLocaleDateString()}</span>
               </div>
             </div>
 
-            {/* Clothes Items to Hand Over */}
+            {/* Unpaid Alert Banner */}
+            {unpaidAlert && (
+              <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <div>
+                    <span className="font-bold">توجہ فرمائیں: بل ابھی ادا نہیں ہوا!</span>
+                    <span className="block text-[11px] text-rose-700">
+                      واجب الادا رقم: <strong className="font-mono text-xs">Rs {receipt.total_amount}</strong>
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => markDelivered(true)}
+                  disabled={delivering}
+                  className="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow-sm transition"
+                >
+                  رقم وصول کر کے حوالے کریں
+                </button>
+              </div>
+            )}
+
+            {/* Items Table */}
             <div>
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                <Shirt className="w-4 h-4 text-emerald-600" />
-                <span>واپسی کے لیے کپڑوں کی تفصیل (Clothes Items Breakdown):</span>
-              </h4>
-              <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <table className="w-full text-xs text-right">
-                  <thead className="bg-slate-100/80 text-slate-700 font-bold border-b">
+              <div className="font-semibold text-slate-700 mb-1 text-xs">
+                کپڑوں کی تفصیل ({receipt.total_pieces} عدد):
+              </div>
+              <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <table className="w-full text-right text-xs">
+                  <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 text-[11px]">
                     <tr>
-                      <th className="p-3">شے کا نام (Item)</th>
-                      <th className="p-3 text-center">تعداد (Quantity)</th>
-                      {receipt.type === 'Private' && (
-                        <>
-                          <th className="p-3 text-left">ریٹ</th>
-                          <th className="p-3 text-left">رقم</th>
-                        </>
-                      )}
+                      <th className="p-2">شے</th>
+                      <th className="p-2 text-center">تعداد</th>
+                      <th className="p-2 text-left">ریٹ</th>
+                      <th className="p-2 text-left">میزان</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {receipt.items?.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50">
-                        <td className="p-3 font-bold text-slate-900 font-nastaliq text-base leading-snug">
-                          {item.item_name_ur} <span className="text-[11px] text-slate-400 font-normal">({item.item_name_en})</span>
+                    {receipt.items?.map((item: any) => (
+                      <tr key={item.id}>
+                        <td className="p-2 font-medium">{item.item_name}</td>
+                        <td className="p-2 text-center font-mono font-semibold">{item.quantity}</td>
+                        <td className="p-2 text-left font-mono">
+                          {receipt.type === 'Private' ? `Rs ${item.rate}` : 'مفت'}
                         </td>
-                        <td className="p-3 text-center font-bold text-base font-mono text-slate-900">{item.quantity} عدد</td>
-                        {receipt.type === 'Private' && (
-                          <>
-                            <td className="p-3 text-left font-mono">Rs {item.rate_at_time}</td>
-                            <td className="p-3 text-left font-bold font-mono text-slate-900">Rs {item.amount}</td>
-                          </>
-                        )}
+                        <td className="p-2 text-left font-mono font-bold">
+                          {receipt.type === 'Private' ? `Rs ${item.quantity * item.rate}` : '0'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-slate-50 font-bold border-t">
-                    <tr>
-                      <td className="p-3 font-nastaliq">کل کپڑے (Total Pieces)</td>
-                      <td className="p-3 text-center text-base font-black text-emerald-800 font-mono">{receipt.total_pieces} عدد</td>
-                      {receipt.type === 'Private' && (
-                        <>
-                          <td className="p-3 text-left">کل بل</td>
-                          <td className="p-3 text-left text-base font-black text-amber-700 font-mono">Rs {receipt.total_amount}</td>
-                        </>
-                      )}
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
             </div>
 
-            {/* Unpaid Warning Alert (DLV-02) */}
-            {unpaidAlert && (
-              <div className="bg-red-50 border-2 border-red-300 p-5 rounded-2xl text-red-950 flex flex-col sm:flex-row items-start gap-4">
-                <AlertTriangle className="w-7 h-7 text-red-600 shrink-0 mt-0.5" />
-                <div className="flex-1 text-xs space-y-2">
-                  <div className="font-bold text-sm text-red-800 font-nastaliq">
-                    تنبہیہ: پرائیویٹ بل غیر ادا شدہ ہے (Payment Required Before Delivery)
-                  </div>
-                  <p className="text-slate-700 leading-relaxed">
-                    اس رسید کا بل <span className="font-bold font-mono text-red-700 text-sm">Rs {receipt.total_amount}</span> ابھی تک وصول نہیں کیا گیا ہے۔ کپڑے واپس کرنے سے پہلے کاؤنٹر پر نقد رقم وصول فرمائیں۔
-                  </p>
-                  <div>
-                    <button
-                      onClick={() => markDelivered(true)}
-                      disabled={delivering}
-                      className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-md flex items-center gap-2 transition"
-                    >
-                      <DollarSign className="w-4 h-4" />
-                      <span>رقم وصول کر لی (Rs {receipt.total_amount}) اور کپڑے واپس کیے</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Delivery Action Form */}
-            {receipt.status !== 'Delivered' ? (
-              <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
-                <input
-                  type="text"
-                  value={deliveryRemarks}
-                  onChange={e => setDeliveryRemarks(e.target.value)}
-                  placeholder="کوئی تبصرہ یا نوٹ (Optional remarks)..."
-                  className="text-xs p-3 rounded-2xl border border-slate-300 flex-1 min-w-[260px] focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-
+            {/* Actions */}
+            <div className="pt-2 border-t border-slate-100 flex justify-end gap-2">
+              {receipt.status !== 'Delivered' ? (
                 <button
                   onClick={() => markDelivered(false)}
                   disabled={delivering}
-                  className="bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 disabled:opacity-50 text-white font-bold px-7 py-3 rounded-2xl text-sm shadow-lg flex items-center gap-2 transition"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition text-xs shadow-sm"
                 >
-                  <PackageCheck className="w-5 h-5" />
-                  <span>{delivering ? 'محفوظ ہو رہا ہے...' : 'کپڑے حوالے کر دیے (Mark as Delivered)'}</span>
+                  {delivering ? 'عمل جاری...' : 'کپڑے حوالے کر دیے (Mark Delivered)'}
                 </button>
-              </div>
-            ) : (
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
-                <div>
-                  <div className="font-bold font-nastaliq text-sm">یہ رسید پہلے ہی حوالے کی جا چکی ہے (Delivered)</div>
-                  <div className="text-slate-600 font-mono mt-0.5">تاریخ: {new Date(receipt.delivered_on || '').toLocaleString()} بذریعہ {receipt.delivered_by || 'عملہ'}</div>
-                </div>
-              </div>
-            )}
+              ) : (
+                <span className="text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 text-xs">
+                  ✓ یہ کپڑے پہلے ہی طالب علم کے حوالے کیے جا چکے ہیں
+                </span>
+              )}
+            </div>
 
           </div>
         </div>
