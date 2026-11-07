@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ur" dir="rtl">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body className="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
         <AppProvider>
           <AppLayout>{children}</AppLayout>

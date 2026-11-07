@@ -24,7 +24,13 @@ const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
-  const [lang, setLangState] = useState<Locale>('ur');
+  const [lang, setLangState] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jamia_laundry_lang');
+      if (saved === 'en' || saved === 'ur') return saved as Locale;
+    }
+    return 'en';
+  });
   const [settings, setSettings] = useState<SettingsMap>(DEFAULT_SETTINGS);
   const [counterName] = useState<string>('کاؤنٹر 1 (Main)');
   const [isNavigating, setIsNavigating] = useState(false);
@@ -35,6 +41,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLangState(newLang);
     if (typeof window !== 'undefined') {
       localStorage.setItem('jamia_laundry_lang', newLang);
+      document.cookie = `jamia_laundry_lang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
       document.documentElement.dir = newLang === 'ur' ? 'rtl' : 'ltr';
       document.documentElement.lang = newLang;
     }
@@ -42,11 +49,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Initial language setup from localStorage if available
-    const savedLang = localStorage.getItem('jamia_laundry_lang') as Locale | null;
-    if (savedLang && (savedLang === 'en' || savedLang === 'ur')) {
-      setLangState(savedLang);
-      document.documentElement.dir = savedLang === 'ur' ? 'rtl' : 'ltr';
-      document.documentElement.lang = savedLang;
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('jamia_laundry_lang') as Locale | null;
+      const effectiveLang = (savedLang === 'en' || savedLang === 'ur') ? savedLang : 'en';
+      if (effectiveLang !== lang) {
+        setLangState(effectiveLang);
+      }
+      document.documentElement.dir = effectiveLang === 'ur' ? 'rtl' : 'ltr';
+      document.documentElement.lang = effectiveLang;
     }
 
     fetch('/api/auth/me')

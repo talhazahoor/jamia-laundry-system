@@ -206,22 +206,22 @@ export const DEFAULT_STUDENTS: Student[] = [
 ];
 
 export const DEFAULT_SETTINGS: SettingsMap = {
-  jamia_name: 'جامعہ دارالعلوم اسلامیہ',
-  jamia_name_en: 'Jamia Darul Uloom Islamia',
+  jamia_name: 'جامعۃ المصطفٰے',
+  jamia_name_en: 'Jamia-ul-Mustafa',
   laundry_name: 'لانڈری پورٹل',
   laundry_name_en: 'Laundry Portal',
   phone: '042-35800000 / 0300-1234567',
-  address: 'مرکزی کیمپس، بالمقابل دارالاقامہ، لاہور',
+  address: 'لوہیانوالہ گوجرانوالہ',
   sarkari_collection_days: [2, 5], // 2 = Tuesday (منگل), 5 = Friday (جمعہ)
-  sarkari_turnaround_days: 2,
+  sarkari_turnaround_days: 3,
   private_turnaround_days: 1,
   paper_width: '80mm',
   print_copies: 1,
   print_barcode: true,
-  receipt_header: 'JAMIA DARUL ULOOM LAUNDRY SERVICE',
+  receipt_header: 'JAMIA-UL-MUSTAFA LAUNDRY PORTAL',
   receipt_footer: 'کپڑے واپس لیتے وقت یہ پرچی دکھانا لازمی ہے۔ گمشدگی کی صورت میں فوراً مطلع فرمائیں۔',
   default_payment_status: 'Paid',
-  language: 'ur',
+  language: 'en',
   auto_lock_minutes: 30,
 };
 
