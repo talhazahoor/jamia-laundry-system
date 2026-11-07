@@ -46,8 +46,8 @@ export default function ThermalReceiptModal({
         {/* Modal Top Actions */}
         <div className="bg-gradient-to-r from-jamia-950 via-slate-900 to-emerald-950 text-white p-4 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-400/30">
-              <Printer className="w-4 h-4 text-emerald-400" />
+            <div className="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 border border-emerald-400/30">
+              <img src="/logos/laundry-logo.png" alt="Laundry Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <span className="font-bold text-sm block leading-tight">
@@ -114,6 +114,10 @@ export default function ThermalReceiptModal({
 
             {/* Header */}
             <div className="text-center pb-2 border-b border-dashed border-black">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <img src="/logos/institution-logo.png" alt="IM" className="h-9 w-auto object-contain filter grayscale" />
+                <img src="/logos/laundry-logo.png" alt="Laundry Services" className="h-9 w-auto object-contain filter grayscale" />
+              </div>
               <div className="font-bold text-sm urdu-compact leading-tight">
                 {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}
               </div>

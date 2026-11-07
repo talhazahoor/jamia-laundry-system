@@ -483,7 +483,10 @@ export default function CounterPage() {
         {/* Right 5 Columns: Live Bill Slip & Actions */}
         <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3.5 sticky top-16">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs font-semibold text-slate-800">
-            <span>{t.live_receipt_slip}</span>
+            <div className="flex items-center gap-1.5">
+              <img src="/logos/laundry-logo.png" alt="Laundry" className="w-5 h-5 object-contain" />
+              <span>{t.live_receipt_slip}</span>
+            </div>
             <span className={`px-2 py-0.2 rounded text-[10px] font-bold ${
               laundryType === 'Sarkari' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
             }`}>

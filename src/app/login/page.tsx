@@ -64,8 +64,13 @@ export default function LoginPage() {
         
         {/* Header */}
         <div className="bg-slate-900 p-6 text-white text-center">
-          <div className="w-12 h-12 bg-emerald-600 rounded-xl mx-auto flex items-center justify-center mb-3 shadow text-lg font-bold">
-            {lang === 'en' ? 'J' : 'ج'}
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="w-14 h-14 bg-white rounded-2xl p-2 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
+              <img src="/logos/institution-logo.png" alt="Institution Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="w-14 h-14 bg-white rounded-2xl p-1.5 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
+              <img src="/logos/laundry-logo.png" alt="Laundry Services Logo" className="w-full h-full object-contain" />
+            </div>
           </div>
           <h1 className="text-base font-bold text-white mb-0.5">
             {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}

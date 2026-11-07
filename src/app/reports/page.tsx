@@ -247,6 +247,10 @@ export default function ReportsPage() {
         
         {/* Institutional Report Header */}
         <div className="text-center pb-3 border-b border-slate-200">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <img src="/logos/institution-logo.png" alt="IM" className="h-9 w-auto object-contain" />
+            <img src="/logos/laundry-logo.png" alt="Laundry Services" className="h-9 w-auto object-contain" />
+          </div>
           <h2 className="text-base font-bold text-slate-900 leading-tight">
             {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name} — {settings.laundry_name}
           </h2>
