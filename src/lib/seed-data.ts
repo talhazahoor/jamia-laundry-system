@@ -208,8 +208,8 @@ export const DEFAULT_STUDENTS: Student[] = [
 export const DEFAULT_SETTINGS: SettingsMap = {
   jamia_name: 'جامعہ دارالعلوم اسلامیہ',
   jamia_name_en: 'Jamia Darul Uloom Islamia',
-  laundry_name: 'مرکزی لانڈری ڈیپارٹمنٹ',
-  laundry_name_en: 'Central Laundry Department',
+  laundry_name: 'لانڈری پورٹل',
+  laundry_name_en: 'Laundry Portal',
   phone: '042-35800000 / 0300-1234567',
   address: 'مرکزی کیمپس، بالمقابل دارالاقامہ، لاہور',
   sarkari_collection_days: [2, 5], // 2 = Tuesday (منگل), 5 = Friday (جمعہ)

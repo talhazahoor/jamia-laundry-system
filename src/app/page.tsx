@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { lang, t } = useApp();
+  const { lang, t, settings, isTodaySarkariDay } = useApp();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,35 +42,55 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       
-      {/* Top Header & Quick Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
-        <div>
-          <h1 className="text-base font-bold text-slate-900">{t.dashboard_title}</h1>
-          <p className="text-[11px] text-slate-500">
-            {t.dashboard_subtitle}
-          </p>
-        </div>
+      {/* Hero Welcome Banner */}
+      <div className="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
+        />
+        <div className={`absolute inset-0 bg-gradient-to-r ${
+          lang === 'en' 
+            ? 'from-slate-950/95 via-slate-950/80 to-transparent' 
+            : 'from-transparent via-slate-950/80 to-slate-950/95'
+        }`} />
 
-        <div className="flex items-center gap-2">
-          <Link
-            href="/counter"
-            prefetch={true}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-sm transition"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>{t.new_receipt_btn}</span>
-          </Link>
+        <div className="relative z-10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-white">
+          <div className="space-y-1 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{isTodaySarkariDay ? t.sarkari_collection_today : t.private_only_today}</span>
+            </div>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">
+              {lang === 'en' ? 'Laundry Portal' : 'لانڈری پورٹل'}
+            </h1>
+            <p className="text-[11px] text-slate-200/90 leading-relaxed">
+              {lang === 'en' 
+                ? (settings.jamia_name_en || settings.jamia_name) + ' • Daily collection, wash records & financial summary'
+                : settings.jamia_name + ' • روزانہ کلیکشن، دھلائی ریکارڈز اور مالیاتی خلاصہ'}
+            </p>
+          </div>
 
-          <Link
-            href="/deliveries"
-            prefetch={true}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs shadow-sm transition"
-          >
-            <PackageCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{t.return_clothes_btn}</span>
-          </Link>
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <Link
+              href="/counter"
+              prefetch={true}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-sm transition"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>{t.new_receipt_btn}</span>
+            </Link>
+
+            <Link
+              href="/deliveries"
+              prefetch={true}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs backdrop-blur-md border border-white/20 transition"
+            >
+              <PackageCheck className="w-3.5 h-3.5 text-emerald-300" />
+              <span>{t.return_clothes_btn}</span>
+            </Link>
+          </div>
         </div>
       </div>
 

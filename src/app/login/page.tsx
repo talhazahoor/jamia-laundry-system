@@ -48,33 +48,49 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative">
+    <div className="min-h-screen relative flex flex-col items-center justify-center p-4">
+      {/* Scenic Background with Blur and Gradient */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
+      />
+      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" />
+
       {/* Top right language toggle */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => setLang(lang === 'ur' ? 'en' : 'ur')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition shadow-lg"
         >
           <Languages className="w-3.5 h-3.5 text-emerald-400" />
           <span>{lang === 'ur' ? 'English' : 'اردو'}</span>
         </button>
       </div>
 
-      <div className="max-w-sm w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+      <div className="max-w-sm w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20 relative z-10">
         
-        {/* Header */}
-        <div className="bg-slate-900 p-6 text-white text-center">
-          <div className="flex items-center justify-center mb-3">
-            <div className="w-16 h-16 bg-white rounded-2xl p-2 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
-              <img src="/logos/laundry-logo.png" alt="Laundry Services Logo" className="w-full h-full object-contain" />
+        {/* Banner Header with Image and Overlay */}
+        <div className="relative text-white text-center pt-6 pb-5 px-6 overflow-hidden">
+          {/* Subtle Banner Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-900/90 to-slate-950/95" />
+
+          <div className="relative z-10">
+            <div className="flex items-center justify-center mb-2.5">
+              <div className="w-16 h-16 bg-white rounded-2xl p-2 shadow-xl ring-2 ring-emerald-500/30 flex items-center justify-center">
+                <img src="/logos/laundry-logo.png" alt="Laundry Services Logo" className="w-full h-full object-contain" />
+              </div>
             </div>
+            <h1 className="text-lg font-bold text-white mb-0.5 tracking-tight">
+              {lang === 'en' ? 'Laundry Portal' : 'لانڈری پورٹل'}
+            </h1>
+            <p className="text-emerald-300 text-xs font-medium">
+              {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}
+            </p>
           </div>
-          <h1 className="text-base font-bold text-white mb-0.5">
-            {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}
-          </h1>
-          <p className="text-slate-400 text-xs">
-            {settings.laundry_name}
-          </p>
         </div>
 
         {/* Form Body */}

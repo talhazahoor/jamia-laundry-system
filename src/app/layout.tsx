@@ -4,8 +4,8 @@ import { AppProvider } from '@/context/AppContext';
 import AppLayout from '@/components/AppLayout';
 
 export const metadata: Metadata = {
-  title: 'Jamia Laundry Management System',
-  description: 'Clothes Collection, Thermal Mini Receipt Printing, Billing and Reporting for Jamia Madrasa',
+  title: 'Laundry Portal',
+  description: 'Clothes Collection, Thermal Mini Receipt Printing, Billing and Reporting',
   icons: {
     icon: '/logos/laundry-logo.png',
     shortcut: '/logos/laundry-logo.png',

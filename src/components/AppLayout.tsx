@@ -89,7 +89,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   ];
 
   const jamiaDisplayName = lang === 'en' ? settings.jamia_name_en : settings.jamia_name;
-  const laundryDisplayName = lang === 'en' ? (settings.laundry_name_en || 'Laundry Department') : settings.laundry_name;
+  const laundryDisplayName = lang === 'en' ? (settings.laundry_name_en || 'Laundry Portal') : (settings.laundry_name || 'لانڈری پورٹل');
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex text-xs">
