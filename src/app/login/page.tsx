@@ -48,35 +48,35 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center p-4">
-      {/* Scenic Background with Blur and Gradient */}
+    <div className="min-h-screen relative flex flex-col items-center justify-center p-4 overflow-hidden">
+      {/* Crisp, Vibrant Scenic Background - Clear & Unfaded */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
       />
-      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" />
+      {/* Subtle gentle vignette to let the bright campus, sky & laundry items shine */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-black/15 to-slate-900/30" />
 
       {/* Top right language toggle */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-20">
         <button
           onClick={() => setLang(lang === 'ur' ? 'en' : 'ur')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition shadow-lg"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 hover:bg-slate-900 text-white text-xs font-semibold transition shadow-lg"
         >
           <Languages className="w-3.5 h-3.5 text-emerald-400" />
           <span>{lang === 'ur' ? 'English' : 'اردو'}</span>
         </button>
       </div>
 
-      <div className="max-w-sm w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20 relative z-10">
+      <div className="max-w-sm w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/50 relative z-10">
         
-        {/* Banner Header with Image and Overlay */}
+        {/* Banner Header with Clear Image */}
         <div className="relative text-white text-center pt-6 pb-5 px-6 overflow-hidden">
-          {/* Subtle Banner Background Image */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-900/90 to-slate-950/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-900/40 to-slate-950/70" />
 
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-2.5">
@@ -84,10 +84,10 @@ export default function LoginPage() {
                 <img src="/logos/laundry-logo.png" alt="Laundry Services Logo" className="w-full h-full object-contain" />
               </div>
             </div>
-            <h1 className="text-lg font-bold text-white mb-0.5 tracking-tight">
+            <h1 className="text-xl font-bold text-white mb-0.5 tracking-tight drop-shadow-md">
               {lang === 'en' ? 'Laundry Portal' : 'لانڈری پورٹل'}
             </h1>
-            <p className="text-emerald-300 text-xs font-medium">
+            <p className="text-emerald-300 text-xs font-semibold drop-shadow-sm">
               {lang === 'en' ? (settings.jamia_name_en || settings.jamia_name) : settings.jamia_name}
             </p>
           </div>

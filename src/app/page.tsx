@@ -44,30 +44,32 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4">
       
-      {/* Hero Welcome Banner */}
-      <div className="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('/images/laundry-banner.png')` }}
+      {/* Hero Welcome Banner with Proper Dimensions & Unfaded Clarity */}
+      <div className="relative w-full h-48 sm:h-56 md:h-64 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-slate-900">
+        {/* Crisp Unfaded Banner Image */}
+        <img 
+          src="/images/laundry-banner.png" 
+          alt="Jamia Laundry Portal Banner" 
+          className="w-full h-full object-cover object-center" 
         />
-        <div className={`absolute inset-0 bg-gradient-to-r ${
-          lang === 'en' 
-            ? 'from-slate-950/95 via-slate-950/80 to-transparent' 
-            : 'from-transparent via-slate-950/80 to-slate-950/95'
-        }`} />
 
-        <div className="relative z-10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-white">
-          <div className="space-y-1 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{isTodaySarkariDay ? t.sarkari_collection_today : t.private_only_today}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight">
+        {/* Top Floating Day Status Pill */}
+        <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/75 text-emerald-300 border border-white/20 text-[11px] font-semibold backdrop-blur-md shadow-md">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>{isTodaySarkariDay ? t.sarkari_collection_today : t.private_only_today}</span>
+          </div>
+        </div>
+
+        {/* Bottom Bar with Gentle Shadow Gradient for crisp readability without fading the view */}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent pt-12 pb-3.5 px-4 sm:px-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3 text-white">
+          <div className="space-y-0.5 max-w-xl">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-md">
               {lang === 'en' ? 'Laundry Portal' : 'لانڈری پورٹل'}
             </h1>
-            <p className="text-[11px] text-slate-200/90 leading-relaxed">
+            <p className="text-xs text-slate-200 font-medium drop-shadow-sm">
               {lang === 'en' 
-                ? (settings.jamia_name_en || settings.jamia_name) + ' • Daily collection, wash records & financial summary'
+                ? (settings.jamia_name_en || settings.jamia_name) + ' • Clean clothes management, thermal receipts & load records'
                 : settings.jamia_name + ' • روزانہ کلیکشن، دھلائی ریکارڈز اور مالیاتی خلاصہ'}
             </p>
           </div>
@@ -76,7 +78,7 @@ export default function DashboardPage() {
             <Link
               href="/counter"
               prefetch={true}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-sm transition"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md transition"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>{t.new_receipt_btn}</span>
@@ -85,9 +87,9 @@ export default function DashboardPage() {
             <Link
               href="/deliveries"
               prefetch={true}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs backdrop-blur-md border border-white/20 transition"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white font-semibold text-xs backdrop-blur-md border border-white/25 transition shadow-md"
             >
-              <PackageCheck className="w-3.5 h-3.5 text-emerald-300" />
+              <PackageCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>{t.return_clothes_btn}</span>
             </Link>
           </div>
