@@ -253,14 +253,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <Menu className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 hidden sm:flex">
-              <div className="w-5 h-5 bg-white rounded p-0.5 border border-slate-200 flex items-center justify-center shrink-0">
-                <img src="/logos/institution-logo.png" alt="IM" className="w-full h-full object-contain" />
-              </div>
-              <span className="font-semibold text-slate-700 text-xs">
-                {jamiaDisplayName} — {laundryDisplayName}
-              </span>
-            </div>
+            <span className="font-semibold text-slate-700 text-xs hidden sm:inline">
+              {jamiaDisplayName} — {laundryDisplayName}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">

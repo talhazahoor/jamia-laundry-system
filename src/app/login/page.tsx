@@ -64,11 +64,8 @@ export default function LoginPage() {
         
         {/* Header */}
         <div className="bg-slate-900 p-6 text-white text-center">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="w-14 h-14 bg-white rounded-2xl p-2 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
-              <img src="/logos/institution-logo.png" alt="Institution Logo" className="w-full h-full object-contain" />
-            </div>
-            <div className="w-14 h-14 bg-white rounded-2xl p-1.5 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
+          <div className="flex items-center justify-center mb-3">
+            <div className="w-16 h-16 bg-white rounded-2xl p-2 shadow-lg ring-2 ring-emerald-500/20 flex items-center justify-center">
               <img src="/logos/laundry-logo.png" alt="Laundry Services Logo" className="w-full h-full object-contain" />
             </div>
           </div>
