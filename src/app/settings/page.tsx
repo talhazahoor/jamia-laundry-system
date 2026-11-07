@@ -37,14 +37,18 @@ export default function SettingsPage() {
     setSuccess(null);
     try {
       const res = await fetch('/api/settings', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to update settings');
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || `Failed to update settings (${res.status})`);
+      }
 
-      updateLocalSettings(data.settings);
+      if (data?.settings) {
+        updateLocalSettings(data.settings);
+      }
       setSuccess(t.settings_saved);
     } catch (err: any) {
       alert(`${lang === 'en' ? 'Error' : 'خرابی'}: ${err.message}`);

@@ -3,6 +3,8 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { LaundryItem } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const items = await db.getItems();

@@ -4,6 +4,8 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { User } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getSession(req);
